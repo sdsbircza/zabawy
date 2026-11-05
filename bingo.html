@@ -82,6 +82,12 @@
                     <i id="speechIcon" class="fas font-black fa-volume-up"></i>
                     <span id="speechStatus" class="hidden sm:inline">Lektor: WŁ</span>
                 </button>
+
+                <!-- Przycisk Pełnego Ekranu -->
+                <button id="fullscreenBtn" onclick="toggleFullscreen()" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-300 hover:text-white transition-all" title="Tryb pełnego ekranu (F)">
+                    <i id="fullscreenIcon" class="fas fa-expand"></i>
+                    <span id="fullscreenStatus" class="hidden sm:inline">Pełny ekran</span>
+                </button>
             </div>
         </div>
     </header>
@@ -296,6 +302,47 @@
             synth.speak(utterance);
         }
 
+        // Obsługa Pełnego Ekranu (Fullscreen API)
+        function toggleFullscreen() {
+            if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
+                const elem = document.documentElement;
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) {
+                    elem.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
+
+        function updateFullscreenUI() {
+            const icon = document.getElementById('fullscreenIcon');
+            const status = document.getElementById('fullscreenStatus');
+            const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+
+            if (isFS) {
+                icon.className = 'fas fa-compress';
+                status.textContent = 'Zamknij ekran';
+            } else {
+                icon.className = 'fas fa-expand';
+                status.textContent = 'Pełny ekran';
+            }
+        }
+
+        document.addEventListener('fullscreenchange', updateFullscreenUI);
+        document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
+        document.addEventListener('mozfullscreenchange', updateFullscreenUI);
+        document.addEventListener('MSFullscreenChange', updateFullscreenUI);
+
         // Losowanie kolejnej liczby z animacją bębna
         function drawNextNumber() {
             if (isDrawing || availableNumbers.length === 0) return;
@@ -485,11 +532,14 @@
             });
         }
 
-        // Skróty klawiszowe (Spacja do losowania)
+        // Skróty klawiszowe (Spacja do losowania, F / F11 dla pełnego ekranu)
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space') {
                 e.preventDefault();
                 drawNextNumber();
+            } else if (e.key === 'f' || e.key === 'F') {
+                e.preventDefault();
+                toggleFullscreen();
             }
         });
 
