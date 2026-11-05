@@ -124,16 +124,23 @@
         <!-- Sekcja Główna z Kołem i Historią -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full items-center my-auto">
             
-            <!-- Panel Boczny Lewy: Przełącznik Dźwięku i Statystyki -->
+            <!-- Panel Boczny Lewy: Przełącznik Dźwięku, Pełny Ekran i Statystyki -->
             <div class="hidden lg:flex lg:col-span-3 flex-col gap-4 order-2 lg:order-1">
                 <div class="bg-mystic-800/40 border border-mystic-purple/20 p-5 rounded-2xl backdrop-blur-md">
                     <h3 class="font-cinzel font-bold text-mystic-gold mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-volume-high"></i> Dźwięk Mistyczny
+                        <i class="fa-solid fa-sliders"></i> Ustawienia
                     </h3>
-                    <p class="text-xs text-slate-400 mb-4">Włącz efekty dźwiękowe podczas obrotów koła dla pełniejszego doświadczenia.</p>
-                    <button id="sound-toggle-btn" onclick="toggleAudio()" class="w-full py-2.5 px-4 rounded-xl border border-mystic-gold/40 text-mystic-gold hover:bg-mystic-gold/10 font-semibold text-sm transition-all flex items-center justify-center gap-2">
-                        <i id="sound-icon" class="fa-solid fa-volume-high"></i> Dźwięk: Włączony
-                    </button>
+                    <p class="text-xs text-slate-400 mb-4">Dostosuj dźwięk i widok trybu pełnoekranowego.</p>
+                    
+                    <div class="flex flex-col gap-3">
+                        <button id="sound-toggle-btn" onclick="toggleAudio()" class="w-full py-2.5 px-4 rounded-xl border border-mystic-gold/40 text-mystic-gold hover:bg-mystic-gold/10 font-semibold text-sm transition-all flex items-center justify-center gap-2">
+                            <i id="sound-icon" class="fa-solid fa-volume-high"></i> <span>Dźwięk: Włączony</span>
+                        </button>
+                        
+                        <button id="fullscreen-btn" onclick="toggleFullscreen()" class="w-full py-2.5 px-4 rounded-xl border border-mystic-gold/40 text-mystic-gold hover:bg-mystic-gold/10 font-semibold text-sm transition-all flex items-center justify-center gap-2">
+                            <i id="fullscreen-icon" class="fa-solid fa-expand"></i> <span id="fullscreen-text">Pełny Ekran</span>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="bg-mystic-800/40 border border-mystic-purple/20 p-5 rounded-2xl backdrop-blur-md">
@@ -180,9 +187,14 @@
             <div class="lg:col-span-3 w-full order-3">
                 <!-- Mobile Sound & Stat Toggle -->
                 <div class="flex lg:hidden justify-between items-center bg-mystic-800/40 border border-mystic-purple/20 p-3 rounded-xl mb-4 backdrop-blur-md">
-                    <button onclick="toggleAudio()" class="text-xs text-mystic-gold flex items-center gap-2">
-                        <i id="sound-icon-mobile" class="fa-solid fa-volume-high"></i> Dźwięk: ON
-                    </button>
+                    <div class="flex gap-4 items-center">
+                        <button onclick="toggleAudio()" class="text-xs text-mystic-gold flex items-center gap-1.5">
+                            <i id="sound-icon-mobile" class="fa-solid fa-volume-high"></i> Dźwięk: ON
+                        </button>
+                        <button onclick="toggleFullscreen()" class="text-xs text-mystic-gold flex items-center gap-1.5">
+                            <i id="fullscreen-icon-mobile" class="fa-solid fa-expand"></i> Ekran
+                        </button>
+                    </div>
                     <span class="text-xs text-slate-300">Losowań: <strong id="spin-count-mobile" class="text-mystic-gold">0</strong></span>
                 </div>
 
@@ -240,7 +252,7 @@
 
     <!-- Skrypt Gry -->
     <script>
-        // Definicje kategorii wyświatlanych na wycinkach koła
+        // Definicje kategorii wyświetlanych na wycinkach koła
         const categories = [
             { id: 'love', name: 'Miłość', icon: 'fa-heart', color: '#F72585' },
             { id: 'wealth', name: 'Bogactwo', icon: 'fa-coins', color: '#FFD700' },
@@ -348,6 +360,44 @@
             }
         }
 
+        // Funkcja Trybu Pełnoekranowego (Fullscreen API)
+        function toggleFullscreen() {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
+                const docEl = document.documentElement;
+                if (docEl.requestFullscreen) {
+                    docEl.requestFullscreen();
+                } else if (docEl.webkitRequestFullscreen) {
+                    docEl.webkitRequestFullscreen();
+                } else if (docEl.msRequestFullscreen) {
+                    docEl.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
+
+        // Aktualizacja ikony i tekstu przycisku pełnego ekranu
+        function updateFullscreenUI() {
+            const isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+            const iconClass = isFullscreen ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+            const text = isFullscreen ? 'Opuść Pełny Ekran' : 'Pełny Ekran';
+
+            document.getElementById('fullscreen-icon').className = iconClass;
+            document.getElementById('fullscreen-text').innerText = text;
+            document.getElementById('fullscreen-icon-mobile').className = iconClass;
+        }
+
+        // Nasłuchiwanie zmiany stanu ekranu
+        document.addEventListener('fullscreenchange', updateFullscreenUI);
+        document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
+        document.addEventListener('msfullscreenchange', updateFullscreenUI);
+
         // Generowanie dźwięku cyknięcia koła
         function playTickSound() {
             if (!soundEnabled) return;
@@ -402,9 +452,8 @@
             const text = soundEnabled ? 'Dźwięk: Włączony' : 'Dźwięk: Wyłączony';
             const iconClass = soundEnabled ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark';
             
-            document.getElementById('sound-toggle-btn').innerHTML = `<i class="${iconClass}"></i> ${text}`;
+            document.getElementById('sound-toggle-btn').innerHTML = `<i id="sound-icon" class="${iconClass}"></i> <span>${text}</span>`;
             document.getElementById('sound-icon-mobile').className = iconClass;
-            document.getElementById('spin-count-mobile').nextSibling.textContent = soundEnabled ? ' ON' : ' OFF';
         }
 
         // Dopasowanie rozmiaru Canvasu
