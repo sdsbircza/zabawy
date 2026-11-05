@@ -1,3 +1,8 @@
+Oto zaktualizowany plik HTML. Filtry kategorii zostały całkowicie usunięte z widoku aplikacji, a wybór kategorii odbywa się teraz **bezpośrednio na poszczególnych wycinkach koła fortuny**.
+
+Każdy wycinek koła wyświetla jedną z dostępnych kategorii wraz z odpowiadającą jej ikoną. Po zatrzymaniu koła losowana jest konkretna wróżba z wybranej przez igłę kategorii.
+
+```html
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -117,33 +122,9 @@
                 MISTYCZNE KOŁO FORTUNY
             </h1>
             <p class="text-slate-400 text-sm md:text-base mt-2 max-w-xl mx-auto">
-                Wybierz kategorię lub pozwól losowi zadecydować. Zakręć kołem i poznaj tajemnice swojej przyszłości.
+                Zakręć kołem i pozwól losowi zadecydować, która kategoria odsłoni tajemnice Twojej przyszłości.
             </p>
         </header>
-
-        <!-- Filtry Kategorii -->
-        <div class="w-full flex justify-center mb-6 overflow-x-auto py-2 px-4 no-scrollbar">
-            <div class="flex gap-2 md:gap-3 bg-mystic-900/80 p-2 rounded-2xl border border-mystic-purple/30 backdrop-blur-md">
-                <button onclick="setCategory('all')" id="cat-all" class="cat-btn px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all duration-300 bg-mystic-purple text-white shadow-lg">
-                    ✨ Wszystkie
-                </button>
-                <button onclick="setCategory('love')" id="cat-love" class="cat-btn px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-slate-300 hover:text-white hover:bg-mystic-800 transition-all duration-300">
-                    🔮 Miłość
-                </button>
-                <button onclick="setCategory('wealth')" id="cat-wealth" class="cat-btn px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-slate-300 hover:text-white hover:bg-mystic-800 transition-all duration-300">
-                    💰 Bogactwo
-                </button>
-                <button onclick="setCategory('fate')" id="cat-fate" class="cat-btn px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-slate-300 hover:text-white hover:bg-mystic-800 transition-all duration-300">
-                    🌟 Magia
-                </button>
-                <button onclick="setCategory('travel')" id="cat-travel" class="cat-btn px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-slate-300 hover:text-white hover:bg-mystic-800 transition-all duration-300">
-                    ✈️ Przygody
-                </button>
-                <button onclick="setCategory('health')" id="cat-health" class="cat-btn px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-slate-300 hover:text-white hover:bg-mystic-800 transition-all duration-300">
-                    🍀 Pomyślność
-                </button>
-            </div>
-        </div>
 
         <!-- Sekcja Główna z Kołem i Historią -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full items-center my-auto">
@@ -264,39 +245,48 @@
 
     <!-- Skrypt Gry -->
     <script>
-        // Baza wróżb podzielona na kategorie
-        const fortunesData = [
-            // Miłość i Relacje
-            { id: 1, category: 'love', catName: 'Miłość', icon: 'fa-heart', color: '#F72585', text: 'Niespodziewana wiadomość od kogoś z przeszłości zmieni Twój dzień na lepsze.' },
-            { id: 2, category: 'love', catName: 'Miłość', icon: 'fa-heart', color: '#F72585', text: 'Twój czar i naturalność przyciągną dzisiaj niezwykłą, wartościową osobę.' },
-            { id: 3, category: 'love', catName: 'Miłość', icon: 'fa-heart', color: '#F72585', text: 'Szczera rozmowa przy świecach rozwieje wszelkie dotychczasowe wątpliwości.' },
-            { id: 4, category: 'love', catName: 'Miłość', icon: 'fa-heart', color: '#F72585', text: 'Otwórz serce – ktoś blisko Ciebie darzy Cię uczuciem, o którym nie miałeś pojęcia.' },
-            
-            // Bogactwo i Kariera
-            { id: 5, category: 'wealth', catName: 'Bogactwo', icon: 'fa-coins', color: '#FFD700', text: 'Zbliża się okazja do znacznego zysku – bądź czujny w ciągu najbliższych dni.' },
-            { id: 6, category: 'wealth', catName: 'Bogactwo', icon: 'fa-coins', color: '#FFD700', text: 'Nowy projekt lub pomysł przyniesie Ci uznanie przełożonych i większe finanse.' },
-            { id: 7, category: 'wealth', catName: 'Bogactwo', icon: 'fa-coins', color: '#FFD700', text: 'Inwestycja w rozwój własnych umiejętności zwróci się z potrójną siłą.' },
-            { id: 8, category: 'wealth', catName: 'Bogactwo', icon: 'fa-coins', color: '#FFD700', text: 'Unikaj pochopnych wydatków, a pod koniec miesiąca czeka Cię miła niespodzianka.' },
-
-            // Przeznaczenie i Magia
-            { id: 9, category: 'fate', catName: 'Magia', icon: 'fa-wand-magic-sparkles', color: '#9D4EDD', text: 'Wkrótce rozwiąże się zagadka, która od dawna nie dawała Ci spokoju.' },
-            { id: 10, category: 'fate', catName: 'Magia', icon: 'fa-wand-magic-sparkles', color: '#9D4EDD', text: 'Zaufaj swojej intuicji – Twój wewnętrzny głos wskaże Ci właściwą ścieżkę.' },
-            { id: 11, category: 'fate', catName: 'Magia', icon: 'fa-wand-magic-sparkles', color: '#9D4EDD', text: 'Sen, który niedawno widziałeś, zawiera klucz do Twojej najbliższej przyszłości.' },
-            { id: 12, category: 'fate', catName: 'Magia', icon: 'fa-wand-magic-sparkles', color: '#9D4EDD', text: 'Dobre uczynki z przeszłości powrócą do Ciebie pod postacią niezwykłego zbiegu okoliczności.' },
-
-            // Podróże i Przygody
-            { id: 13, category: 'travel', catName: 'Przygoda', icon: 'fa-compass', color: '#4CC9F0', text: 'Niespodziewana podróż otworzy przed Tobą całkiem nowe horyzonty.' },
-            { id: 14, category: 'travel', catName: 'Przygoda', icon: 'fa-compass', color: '#4CC9F0', text: 'Czas wyjść ze strefy komfortu! Nowe miejsce przyniesie Ci wielką inspirację.' },
-            { id: 15, category: 'travel', catName: 'Przygoda', icon: 'fa-compass', color: '#4CC9F0', text: 'Spotkanie w drodze z nieznajomym odmieni Twoje spojrzenie na pewną sprawę.' },
-
-            // Pomyślność i Zdrowie
-            { id: 16, category: 'health', catName: 'Pomyślność', icon: 'fa-clover', color: '#2ECC71', text: 'Twoja energia życiowa osiągnie szczytowy poziom – wykorzystaj ten czas!' },
-            { id: 17, category: 'health', catName: 'Pomyślność', icon: 'fa-clover', color: '#2ECC71', text: 'Odnajdziesz długo wyczekiwaną harmonijkę i spokój ducha pośród codziennego zgiełku.' },
-            { id: 18, category: 'health', catName: 'Pomyślność', icon: 'fa-clover', color: '#2ECC71', text: 'Drobny gest życzliwości sprawi, że cały Twój tydzień wypełni się pozytywną aurą.' }
+        // Definicje kategorii wyświatlanych na wycinkach koła
+        const categories = [
+            { id: 'love', name: 'Miłość', icon: 'fa-heart', color: '#F72585' },
+            { id: 'wealth', name: 'Bogactwo', icon: 'fa-coins', color: '#FFD700' },
+            { id: 'fate', name: 'Magia', icon: 'fa-wand-magic-sparkles', color: '#9D4EDD' },
+            { id: 'travel', name: 'Przygoda', icon: 'fa-compass', color: '#4CC9F0' },
+            { id: 'health', name: 'Pomyślność', icon: 'fa-clover', color: '#2ECC71' }
         ];
 
+        // Baza wróżb przypisanych do poszczególnych kategorii
+        const fortunesDatabase = {
+            love: [
+                'Niespodziewana wiadomość od kogoś z przeszłości zmieni Twój dzień na lepsze.',
+                'Twój czar i naturalność przyciągną dzisiaj niezwykłą, wartościową osobę.',
+                'Szczera rozmowa przy świecach rozwieje wszelkie dotychczasowe wątpliwości.',
+                'Otwórz serce – ktoś blisko Ciebie darzy Cię uczuciem, o którym nie miałeś pojęcia.'
+            ],
+            wealth: [
+                'Zbliża się okazja do znacznego zysku – bądź czujny w ciągu najbliższych dni.',
+                'Nowy projekt lub pomysł przyniesie Ci uznanie przełożonych i większe finanse.',
+                'Inwestycja w rozwój własnych umiejętności zwróci się z potrójną siłą.',
+                'Unikaj pochopnych wydatków, a pod koniec miesiąca czeka Cię miła niespodzianka.'
+            ],
+            fate: [
+                'Wkrótce rozwiąże się zagadka, która od dawna nie dawała Ci spokoju.',
+                'Zaufaj swojej intuicji – Twój wewnętrzny głos wskaże Ci właściwą ścieżkę.',
+                'Sen, który niedawno widziałeś, zawiera klucz do Twojej najbliższej przyszłości.',
+                'Dobre uczynki z przeszłości powrócą do Ciebie pod postacią niezwykłego zbiegu okoliczności.'
+            ],
+            travel: [
+                'Niespodziewana podróż otworzy przed Tobą całkiem nowe horyzonty.',
+                'Czas wyjść ze strefy komfortu! Nowe miejsce przyniesie Ci wielką inspirację.',
+                'Spotkanie w drodze z nieznajomym odmieni Twoje spojrzenie na pewną sprawę.'
+            ],
+            health: [
+                'Twoja energia życiowa osiągnie szczytowy poziom – wykorzystaj ten czas!',
+                'Odnajdziesz długo wyczekiwaną harmonijkę i spokój ducha pośród codziennego zgiełku.',
+                'Drobny gest życzliwości sprawi, że cały Twój tydzień wypełni się pozytywną aurą.'
+            ]
+        };
+
         // Zmienne Stanu
-        let activeFortunes = [...fortunesData];
         let currentRotation = 0;
         let isSpinning = false;
         let soundEnabled = true;
@@ -391,13 +381,13 @@
             const size = canvas.width / window.devicePixelRatio;
             const center = size / 2;
             const radius = center - 8;
-            const numSegments = activeFortunes.length;
+            const numSegments = categories.length;
             const anglePerSegment = (2 * Math.PI) / numSegments;
 
             ctx.clearRect(0, 0, size, size);
 
             for (let i = 0; i < numSegments; i++) {
-                const item = activeFortunes[i];
+                const item = categories[i];
                 const startAngle = i * anglePerSegment + currentRotation;
                 const endAngle = startAngle + anglePerSegment;
 
@@ -420,22 +410,17 @@
                 ctx.strokeStyle = '#FFD700';
                 ctx.stroke();
 
-                // Dodanie tekstu/ikony na wycinku
+                // Dodanie tekstu kategorii na wycinku
                 ctx.save();
                 ctx.translate(center, center);
                 ctx.rotate(startAngle + anglePerSegment / 2);
                 ctx.textAlign = 'right';
                 ctx.fillStyle = '#FFFFFF';
-                ctx.font = 'bold 12px Inter, sans-serif';
+                ctx.font = 'bold 13px Inter, sans-serif';
 
-                // Skrócony tekst kategorii
-                const maxChar = Math.floor(radius / 20);
-                let label = item.catName;
-                if (numSegments > 10) label = label.substring(0, 8) + '.';
-                
                 ctx.shadowColor = 'black';
                 ctx.shadowBlur = 4;
-                ctx.fillText(label, radius - 20, 4);
+                ctx.fillText(item.name, radius - 20, 4);
 
                 ctx.restore();
             }
@@ -448,28 +433,6 @@
             ctx.stroke();
         }
 
-        // Zmiana Kategorii
-        function setCategory(cat) {
-            if (isSpinning) return;
-
-            // Aktualizacja stylów przycisków
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                btn.className = 'cat-btn px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-slate-300 hover:text-white hover:bg-mystic-800 transition-all duration-300';
-            });
-            document.getElementById(`cat-${cat}`).className = 'cat-btn px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all duration-300 bg-mystic-purple text-white shadow-lg';
-
-            // Filtrowanie bazy
-            if (cat === 'all') {
-                activeFortunes = [...fortunesData];
-            } else {
-                activeFortunes = fortunesData.filter(f => f.category === cat);
-            }
-
-            // Ponowne wyrenderowanie
-            currentRotation = 0;
-            drawWheel();
-        }
-
         // Mechanizm Obrotu Koła
         function spinWheel() {
             if (isSpinning) return;
@@ -477,8 +440,7 @@
             spinBtn.disabled = true;
             initAudio();
 
-            // Losowe ustawienie obrotów (min 5 obrotów + losowy kąt)
-            const numSegments = activeFortunes.length;
+            const numSegments = categories.length;
             const anglePerSegment = (2 * Math.PI) / numSegments;
             const randomIndex = Math.floor(Math.random() * numSegments);
             
@@ -499,7 +461,7 @@
                 const elapsed = currentTime - startTime;
                 const progress = Math.min(elapsed / duration, 1);
 
-                // Funkcja Easing (Ease Out Cubic/Quart dla płynnego zwolnienia)
+                // Funkcja Easing (Ease Out Quart)
                 const easeOut = 1 - Math.pow(1 - progress, 4);
                 currentRotation = startRotation + (targetRotation - startRotation) * easeOut;
 
@@ -521,9 +483,21 @@
                     isSpinning = false;
                     spinBtn.disabled = false;
                     
-                    // Wyznaczenie wygranej wróżby
+                    // Wyznaczenie wylosowanej kategorii i wróżby
                     const finalIndex = Math.floor(((3 * Math.PI / 2 - (currentRotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI)) / anglePerSegment);
-                    currentFortune = activeFortunes[finalIndex % numSegments];
+                    const selectedCategory = categories[finalIndex % numSegments];
+                    
+                    // Losowanie konkretnego tekstu z danej kategorii
+                    const fortunesList = fortunesDatabase[selectedCategory.id];
+                    const randomText = fortunesList[Math.floor(Math.random() * fortunesList.length)];
+
+                    currentFortune = {
+                        category: selectedCategory.id,
+                        catName: selectedCategory.name,
+                        icon: selectedCategory.icon,
+                        color: selectedCategory.color,
+                        text: randomText
+                    };
 
                     // Zwiększenie licznika i dodanie do historii
                     spinCount++;
@@ -586,12 +560,11 @@
             modal.classList.add('opacity-0', 'pointer-events-none');
         }
 
-        // Udostępnianie Wróżby (Kopiowanie do schowka)
+        // Udostępnianie Wróżby
         function shareFortune() {
             if (!currentFortune) return;
             const shareText = `✨ Moja Przepowiednia na dziś z Mistycznego Koła Fortuny:\n"${currentFortune.text}"\nSprawdź swoją przyszłość!`;
 
-            // Awaryjne kopiowanie dla iframe / starych przeglądarek
             const textArea = document.createElement("textarea");
             textArea.value = shareText;
             document.body.appendChild(textArea);
@@ -656,3 +629,5 @@
     </script>
 </body>
 </html>
+
+```
