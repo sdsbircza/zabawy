@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astrologiczne Koło Fortuny</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            light: '#fef08a',
+                            DEFAULT: '#d4af37',
+                            dark: '#aa7c11',
+                        },
+                        cosmic: {
+                            dark: '#090514',
+                            purple: '#1a0b2e',
+                            violet: '#2b1055',
+                            accent: '#7b2cbf',
+                        }
+                    },
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        montserrat: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #090514;
+            color: #e2e8f0;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #fff3a1 0%, #d4af37 50%, #aa7c11 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gold-border {
+            border-image: linear-gradient(to bottom right, #ffe57f, #d4af37, #8c6200) 1;
+        }
+
+        .box-glow {
+            box-shadow: 0 0 25px rgba(123, 44, 191, 0.4), 0 0 10px rgba(212, 175, 55, 0.2);
+        }
+
+        .modal-glow {
+            box-shadow: 0 0 50px rgba(123, 44, 191, 0.6), 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Canvas canvas styling */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090514;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2b1055;
+            border-radius: 4px;
+            border: 1px solid #d4af37;
+        }
+
+        /* Custom animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.6; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)); }
+            50% { opacity: 1; filter: drop-shadow(0 0 25px rgba(212, 175, 55, 0.9)); }
+        }
+
+        .animate-pulse-glow {
+            animation: pulse-glow 3s infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between relative selection:bg-purple-900 selection:text-gold-light">
+
+    <!-- Background Starfield Canvas -->
+    <canvas id="starfield"></canvas>
+
+    <!-- Main Container -->
+    <div class="relative z-10 flex flex-col min-h-screen">
+        
+        <!-- Header -->
+        <header class="py-6 px-4 text-center border-b border-purple-900/40 bg-cosmic-purple/60 backdrop-blur-md sticky top-0 z-20">
+            <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid font-cinzel fa-moon text-gold text-2xl animate-pulse-glow"></i>
+                    <h1 class="font-cinzel text-2xl md:text-3xl font-bold tracking-wider gold-gradient-text">
+                        AstroFortuna
+                    </h1>
+                </div>
+                <p class="text-xs md:text-sm text-purple-200/80 font-cinzel tracking-widest uppercase">
+                    Odkryj tajemnice gwiazd &bull; Astrologiczne Koło Przeznaczenia
+                </p>
+                <button id="soundToggle" class="px-3 py-1.5 rounded-full border border-gold/40 text-xs font-semibold text-gold hover:bg-gold/10 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-volume-high" id="soundIcon"></i>
+                    <span id="soundText">Dźwięk: Wł.</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="flex-grow flex flex-col items-center justify-center p-4 md:p-8 max-w-6xl mx-auto w-full">
+            
+            <!-- Category Tabs -->
+            <div class="w-full max-w-xl mb-6">
+                <div class="flex justify-center bg-cosmic-purple/80 backdrop-blur-md p-1.5 rounded-2xl border border-gold/30 shadow-lg gap-1">
+                    <button data-category="general" class="category-btn active flex-1 py-2 px-3 rounded-xl text-xs sm:text-sm font-cinzel font-semibold transition-all duration-300 bg-gold text-cosmic-dark shadow-md">
+                        <i class="fa-solid fa-sparkles mr-1.5"></i>Wszystkie
+                    </button>
+                    <button data-category="love" class="category-btn flex-1 py-2 px-3 rounded-xl text-xs sm:text-sm font-cinzel font-semibold text-purple-200 hover:text-white hover:bg-purple-800/40 transition-all duration-300">
+                        <i class="fa-solid fa-heart mr-1.5"></i>Miłość
+                    </button>
+                    <button data-category="career" class="category-btn flex-1 py-2 px-3 rounded-xl text-xs sm:text-sm font-cinzel font-semibold text-purple-200 hover:text-white hover:bg-purple-800/40 transition-all duration-300">
+                        <i class="fa-solid fa-coins mr-1.5"></i>Kariera
+                    </button>
+                    <button data-category="spirit" class="category-btn flex-1 py-2 px-3 rounded-xl text-xs sm:text-sm font-cinzel font-semibold text-purple-200 hover:text-white hover:bg-purple-800/40 transition-all duration-300">
+                        <i class="fa-solid fa-eye mr-1.5"></i>Duchowe
+                    </button>
+                </div>
+            </div>
+
+            <!-- Wheel Section Container -->
+            <div class="relative flex flex-col items-center justify-center my-4">
+                
+                <!-- Pointer/Arrow Indicator -->
+                <div class="absolute -top-6 z-20 flex flex-col items-center filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">
+                    <div class="w-8 h-10 bg-gradient-to-b from-yellow-200 via-gold to-gold-dark clip-polygon-pointer transform rotate-180 border-t-2 border-white"></div>
+                    <i class="fa-solid fa-gem text-gold text-xs -mt-9 animate-pulse"></i>
+                </div>
+
+                <!-- Canvas Wheel Box -->
+                <div class="relative p-3 rounded-full bg-gradient-to-b from-gold/30 via-purple-900/20 to-gold/10 border-2 border-gold/40 box-glow backdrop-blur-sm">
+                    <canvas id="wheelCanvas" width="460" height="460" class="max-w-full h-auto cursor-pointer rounded-full"></canvas>
+                    
+                    <!-- Center Spin Button -->
+                    <button id="spinBtnCenter" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-br from-purple-900 via-cosmic-purple to-cosmic-dark border-4 border-gold shadow-[0_0_20px_rgba(212,175,55,0.6)] flex flex-col items-center justify-center group hover:scale-105 active:scale-95 transition-all duration-300 z-10">
+                        <i class="fa-solid fa-sun text-gold text-xl md:text-2xl group-hover:rotate-45 transition-transform duration-500 mb-0.5"></i>
+                        <span class="font-cinzel text-xs md:text-sm font-bold gold-gradient-text tracking-wider uppercase">Zakręć</span>
+                    </button>
+                </div>
+
+                <!-- Outer Control Spin Button (Mobile Friendly) -->
+                <div class="mt-8 flex flex-col sm:flex-row gap-4 items-center">
+                    <button id="spinBtn" class="px-8 py-3.5 rounded-full bg-gradient-to-r from-gold-dark via-gold to-gold-light text-cosmic-dark font-cinzel font-bold text-base md:text-lg tracking-widest shadow-[0_0_25px_rgba(212,175,55,0.4)] hover:shadow-[0_0_35px_rgba(212,175,55,0.7)] hover:scale-105 active:scale-95 transition-all duration-300 uppercase flex items-center gap-3">
+                        <i class="fa-solid fa-arrows-spin text-xl"></i>
+                        <span>Poznaj Przeznaczenie</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Symbol Legend Section -->
+            <div class="w-full max-w-4xl mt-8 p-5 rounded-2xl bg-cosmic-purple/60 border border-gold/30 backdrop-blur-md shadow-lg">
+                <h3 class="font-cinzel text-center text-sm md:text-base font-bold gold-gradient-text mb-4 uppercase tracking-widest flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-book-bookmark text-gold"></i> Legenda Symboli Astrologicznych
+                </h3>
+                <div id="legendGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 text-xs font-cinzel">
+                    <!-- Dynamic Grid Items generated by JS -->
+                </div>
+            </div>
+
+            <!-- Recent History / Encouragement Banner -->
+            <div id="quickResultBox" class="mt-6 w-full max-w-xl text-center p-4 rounded-2xl bg-cosmic-purple/40 border border-purple-800/40 backdrop-blur-md hidden transition-all duration-500">
+                <span class="text-xs uppercase font-cinzel text-gold/70 tracking-widest block mb-1">Ostatnio Wylosowano</span>
+                <p id="quickResultText" class="font-cinzel text-lg text-purple-100 font-semibold"></p>
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="py-4 px-4 text-center border-t border-purple-900/30 text-xs text-purple-300/60 font-cinzel">
+            <p>&copy; Astrologiczne Koło Fortuny &bull; Wszystkie wróżby są inspiracją dla Twojej własnej intuicji</p>
+        </footer>
+
+    </div>
+
+    <!-- Modal for Result Reading -->
+    <div id="resultModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="relative w-full max-w-xl bg-gradient-to-b from-cosmic-purple via-cosmic-dark to-purple-950 rounded-3xl border-2 border-gold/60 p-6 sm:p-8 modal-glow transform scale-90 transition-transform duration-300 text-center overflow-hidden">
+            
+            <!-- Modal Ambient Glow Background -->
+            <div class="absolute -top-24 -left-24 w-48 h-48 bg-gold/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-purple-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+            <!-- Close Button -->
+            <button id="closeModal" class="absolute top-4 right-4 text-purple-300 hover:text-gold text-xl w-10 h-10 rounded-full bg-purple-950/60 border border-purple-700/40 flex items-center justify-center transition-all">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Icon Header -->
+            <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-purple-900/50 border border-gold/50 flex items-center justify-center box-glow animate-float">
+                <i id="modalIcon" class="fa-solid fa-star text-3xl text-gold"></i>
+            </div>
+
+            <!-- Category & Title -->
+            <span id="modalCategory" class="text-xs font-cinzel tracking-widest text-gold uppercase px-3 py-1 rounded-full bg-gold/10 border border-gold/30">
+                Kategoria
+            </span>
+            
+            <h2 id="modalTitle" class="font-cinzel text-2xl sm:text-3xl font-bold gold-gradient-text mt-3 mb-2">
+                Nazwa Sektora
+            </h2>
+
+            <!-- Sign Symbol / Element -->
+            <div id="modalSub" class="text-xs font-cinzel text-purple-300 tracking-wider mb-4 italic">
+                Element Koziorożca &bull; Żywioł Ziemi
+            </div>
+
+            <!-- Reading Body -->
+            <div class="my-6 p-4 rounded-2xl bg-purple-950/40 border border-purple-800/40 text-purple-100 text-sm sm:text-base leading-relaxed text-justify max-h-60 overflow-y-auto">
+                <p id="modalReading">
+                    Tutaj pojawi się treść astrologicznej przepowiedni...
+                </p>
+            </div>
+
+            <!-- Actions Buttons -->
+            <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                <button id="copyBtn" class="w-full sm:w-auto px-6 py-2.5 rounded-full border border-gold/50 text-gold hover:bg-gold/10 font-cinzel text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-copy"></i>
+                    <span id="copyBtnText">Kopiuj wróżbę</span>
+                </button>
+                <button id="spinAgainBtn" class="w-full sm:w-auto px-6 py-2.5 rounded-full bg-gradient-to-r from-gold-dark to-gold text-cosmic-dark font-cinzel text-xs sm:text-sm font-bold transition-all shadow-md hover:scale-105 active:scale-95 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Losuj Ponownie</span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 bg-cosmic-purple border border-gold/60 text-gold px-4 py-3 rounded-2xl shadow-xl transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-3">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toastMsg" class="text-xs font-cinzel font-semibold">Skopiowano do schowka!</span>
+    </div>
+
+    <!-- Arrow Pointer Style Helper -->
+    <style>
+        .clip-polygon-pointer {
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+    </style>
+
+    <!-- Application Script -->
+    <script>
+        /**
+         * ASTROLOGICAL WHEEL OF FORTUNE - COMPLETE JS LOGIC
+         */
+
+        // Data Base: 12 Sectors representing Zodiac/Astrological Themes with Astro Unicode / Icons
+        const SECTORS = [
+            {
+                id: 'aries',
+                label: 'Baran: Ogień Działania',
+                zodiacSymbol: '♈',
+                icon: 'fa-fire',
+                color1: '#4a121a',
+                color2: '#2b0910',
+                category: 'general',
+                sub: 'Baran (21.03 - 19.04) • Ogień • Mars',
+                reading: 'Czas odważyć się na krok, którego od dawna się obawiasz. Twoja wewnętrzna iskra stanie się płomieniem sukcesu, jeśli nie lękasz się przejąć inicjatywy. Gwiazdy zwiastują przełom w sprawach wymagających odwagi.'
+            },
+            {
+                id: 'taurus',
+                label: 'Byk: Finanse & Obfitość',
+                zodiacSymbol: '♉',
+                icon: 'fa-coins',
+                color1: '#1b3b22',
+                color2: '#0d1f12',
+                category: 'career',
+                sub: 'Byk (20.04 - 20.05) • Ziemia • Wenus',
+                reading: 'Stabilizacja i zasłużony owoc Twoich starań są już na horyzoncie. Zainwestuj czas w to, co buduje Twoje poczucie bezpieczeństwa. Kosmos sprzyja decyzjom finansowym i budowaniu trwałych fundamentów.'
+            },
+            {
+                id: 'gemini',
+                label: 'Bliźnięta: Magia Słowa',
+                zodiacSymbol: '♊',
+                icon: 'fa-comments',
+                color1: '#3b3212',
+                color2: '#1f1a09',
+                category: 'general',
+                sub: 'Bliźnięta (21.05 - 20.06) • Powietrze • Merkury',
+                reading: 'Kluczem do rozwiązania obecnej zagadki jest szczera rozmowa. Wiadomość, którą wkrótce otrzymasz, rzuci nowe światło na Twoje plany. Bądź otwarty na nowe pomysły i niespodziewane spotkania.'
+            },
+            {
+                id: 'cancer',
+                label: 'Rak: Głębokie Uczucia',
+                zodiacSymbol: '♋',
+                icon: 'fa-heart',
+                color1: '#122c3b',
+                color2: '#09171f',
+                category: 'love',
+                sub: 'Rak (21.06 - 22.07) • Woda • Księżyc',
+                reading: 'Twoja intuicja osiąga najwyższy poziom. Posłuchaj głosu serca, a nie chłodnej kalkulacji. W relacjach nadejdzie czas głębokiego zrozumienia, wybaczenia i prawdziwego zbliżenia emocjonalnego.'
+            },
+            {
+                id: 'leo',
+                label: 'Lew: Blask & Pewność',
+                zodiacSymbol: '♌',
+                icon: 'fa-crown',
+                color1: '#4a3000',
+                color2: '#2b1b00',
+                category: 'career',
+                sub: 'Lew (23.07 - 22.08) • Ogień • Słońce',
+                reading: 'Przestań ukrywać swoje talenty w cieniu. Nadszedł Twój czas, by błyszczeć na scenie życia. Twoja charyzma przyciągnie odpowiednich ludzi, a Twoje starania zostaną dostrzeżone i docenione.'
+            },
+            {
+                id: 'virgo',
+                label: 'Panna: Ład i Uzdrowienie',
+                zodiacSymbol: '♍',
+                icon: 'fa-leaf',
+                color1: '#18362b',
+                color2: '#0c1c16',
+                category: 'spirit',
+                sub: 'Panna (23.08 - 22.09) • Ziemia • Merkury',
+                reading: 'Uporządkuj swoją przestrzeń i umysł. Małe, codzienne nawyki doprowadzą Cię do wielkiego celu. To doskonały czas na zadbanie o zdrowie, ciało i odnalezienie wewnętrznej harmonii.'
+            },
+            {
+                id: 'libra',
+                label: 'Waga: Miłość i Harmonia',
+                zodiacSymbol: '♎',
+                icon: 'fa-scale-balanced',
+                color1: '#371836',
+                color2: '#1e0c1d',
+                category: 'love',
+                sub: 'Waga (23.09 - 22.10) • Powietrze • Wenus',
+                reading: 'Nadejdzie oczekiwana równowaga w relacjach z bliźnimi. Wszelkie spory znajdą łagodne rozwiązanie. Pozwól sobie na piękno, sztukę i otwórz serce na nową lub odnowioną miłość.'
+            },
+            {
+                id: 'scorpio',
+                label: 'Skorpion: Transformacja',
+                zodiacSymbol: '♏',
+                icon: 'fa-wand-magic-sparkles',
+                color1: '#2b0b28',
+                color2: '#170515',
+                category: 'spirit',
+                sub: 'Skorpion (23.10 - 21.11) • Woda • Pluton',
+                reading: 'Coś się kończy, by zrobić miejsce na nowe i znacznie potężniejsze doświadczenie. Nie bój się odpuścić starego. Twoja odrodzona energia przyniesie Ci niezwykłą siłę i duchowy przełom.'
+            },
+            {
+                id: 'sagittarius',
+                label: 'Strzelec: Nowe Horyzonty',
+                zodiacSymbol: '♐',
+                icon: 'fa-compass',
+                color1: '#102738',
+                color2: '#08141d',
+                category: 'general',
+                sub: 'Strzelec (22.11 - 21.12) • Ogień • Jowisz',
+                reading: 'Czeka Cię przygoda – fizyczna lub intelektualna! Los sprzyja poszerzaniu horyzontów, nauce i podróżom. Zaufaj swojej szczęśliwej gwieździe, bo Jowisz roztacza nad Tobą opiekę.'
+            },
+            {
+                id: 'capricorn',
+                label: 'Koziorożec: Ambicja & Szczyt',
+                zodiacSymbol: '♑',
+                icon: 'fa-mountain',
+                color1: '#262419',
+                color2: '#14130d',
+                category: 'career',
+                sub: 'Koziorożec (22.12 - 19.01) • Ziemia • Saturn',
+                reading: 'Twoja cierpliwość i konsekwencja zaczną przynosić trwałe efekty. Wspinaczka na Twój prywatny szczyt jest bliska finału. Pamiętaj, że konsekwencja to cecha zwycięzców.'
+            },
+            {
+                id: 'aquarius',
+                label: 'Wodnik: Błysk Geniuszu',
+                zodiacSymbol: '♒',
+                icon: 'fa-lightbulb',
+                color1: '#0f3138',
+                color2: '#07191d',
+                category: 'spirit',
+                sub: 'Wodnik (20.01 - 18.02) • Powietrze • Uran',
+                reading: 'Wpadniesz na innowacyjny pomysł, który zmieni Twój punkt widzenia. Nie bój się wyłamać ze schematów i myśleć inaczej niż reszta. Twój unikalny punkt widzenia jest Twoją największą mocą.'
+            },
+            {
+                id: 'pisces',
+                label: 'Ryby: Mistyczna Wizja',
+                zodiacSymbol: '♓',
+                icon: 'fa-eye',
+                color1: '#241338',
+                color2: '#12091c',
+                category: 'love',
+                sub: 'Ryby (19.02 - 20.03) • Woda • Neptun',
+                reading: 'Zwróć uwagę na swoje sny i znaki przesłane przez Wszechświat. Twój duchowy przewodnik podpowiada Ci właściwą drogę. Czas na wyciszenie, medytację i artystyczną ekspresję.'
+            }
+        ];
+
+        // Web Audio API Sound Generator
+        // Draw Canvas Wheel with Astrological Icons & Glyphs instead of plain text
+        function drawWheel() {
+            if (!canvas) return;
+            ctx = canvas.getContext('2d');
+            const numSectors = filteredSectors.length;
+            const outsideRadius = canvas.width / 2 - 15;
+            const textRadius = outsideRadius - 60;
+            const iconRadius = outsideRadius - 110;
+            const insideRadius = 55;
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const arc = Math.PI * 2 / numSectors;
+
+            // Outer Glowing Ring
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, outsideRadius + 8, 0, Math.PI * 2);
+            ctx.strokeStyle = '#d4af37';
+            ctx.lineWidth = 3;
+            ctx.shadowColor = '#d4af37';
+            ctx.shadowBlur = 15;
+            ctx.stroke();
+            ctx.restore();
+
+            // Draw Sectors
+            for (let i = 0; i < numSectors; i++) {
+                const angle = startAngle + i * arc;
+                const sector = filteredSectors[i];
+
+                // Gradient for sector
+                const grad = ctx.createRadialGradient(centerX, centerY, insideRadius, centerX, centerY, outsideRadius);
+                grad.addColorStop(0, sector.color1);
+                grad.addColorStop(1, sector.color2);
+
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, outsideRadius, angle, angle + arc, false);
+                ctx.arc(centerX, centerY, insideRadius, angle + arc, angle, true);
+                ctx.fill();
+
+                // Sector Border Lines (Gold)
+                ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                // Render Zodiac Glyphs & Graphical Symbols
+                ctx.save();
+                ctx.translate(
+                    centerX + Math.cos(angle + arc / 2) * textRadius,
+                    centerY + Math.sin(angle + arc / 2) * textRadius
+                );
+                ctx.rotate(angle + arc / 2 + Math.PI / 2);
+
+                // Draw Zodiac Symbol (Zodiac Unicode Glyph)
+                ctx.fillStyle = '#fef08a';
+                ctx.shadowColor = 'rgba(212, 175, 55, 0.8)';
+                ctx.shadowBlur = 8;
+                ctx.font = 'bold 28px "Cinzel", serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(sector.zodiacSymbol, 0, 0);
+
+                ctx.restore();
+
+                // Inner Category Symbol
+                ctx.save();
+                ctx.translate(
+                    centerX + Math.cos(angle + arc / 2) * iconRadius,
+                    centerY + Math.sin(angle + arc / 2) * iconRadius
+                );
+                ctx.rotate(angle + arc / 2 + Math.PI / 2);
+
+                // FontAwesome glyph on canvas via unicode map
+                ctx.fillStyle = '#d4af37';
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+                ctx.shadowBlur = 4;
+                ctx.font = '900 16px "Font Awesome 6 Free"';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                const iconMap = {
+                    'fa-fire': '\uf06d',
+                    'fa-coins': '\uf51e',
+                    'fa-comments': '\uf086',
+                    'fa-heart': '\uf004',
+                    'fa-crown': '\uf521',
+                    'fa-leaf': '\uf06c',
+                    'fa-scale-balanced': '\uf24e',
+                    'fa-wand-magic-sparkles': '\ue2ca',
+                    'fa-compass': '\uf14e',
+                    'fa-mountain': '\uf6fc',
+                    'fa-lightbulb': '\uf0eb',
+                    'fa-eye': '\uf06e'
+                };
+
+                const unicodeChar = iconMap[sector.icon] || '\uf005';
+                ctx.fillText(unicodeChar, 0, 0);
+
+                ctx.restore();
+            }
+
+            // Inner Decorative Gold Ring
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, insideRadius, 0, Math.PI * 2);
+            ctx.strokeStyle = '#d4af37';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // Render Dynamic Legend
+        function renderLegend() {
+            const legendGrid = document.getElementById('legendGrid');
+            if (!legendGrid) return;
+            
+            legendGrid.innerHTML = '';
+            filteredSectors.forEach(sector => {
+                const item = document.createElement('div');
+                item.className = 'flex items-center gap-2.5 p-2 rounded-xl bg-purple-950/40 border border-purple-800/30 hover:border-gold/40 transition-all text-purple-200';
+                item.innerHTML = `
+                    <span class="text-xl text-gold font-bold w-6 text-center">${sector.zodiacSymbol}</span>
+                    <i class="fa-solid ${sector.icon} text-gold/80 text-xs"></i>
+                    <span class="truncate font-medium">${sector.label.split(':')[0]}</span>
+                `;
+                legendGrid.appendChild(item);
+            });
+        }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if (AudioContext) {
+                        this.ctx = new AudioContext();
+                    }
+                }
+            }
+
+            playTick() {
+                if (!this.enabled) return;
+                this.init();
+                if (!this.ctx) return;
+
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(400, this.ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(80, this.ctx.currentTime + 0.04);
+
+                    gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.04);
+
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + 0.04);
+                } catch (e) {
+                    // Audio context errors ignored safely
+                }
+            }
+
+            playWin() {
+                if (!this.enabled) return;
+                this.init();
+                if (!this.ctx) return;
+
+                try {
+                    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                    notes.forEach((freq, index) => {
+                        const osc = this.ctx.createOscillator();
+                        const gain = this.ctx.createGain();
+
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, this.ctx.currentTime + index * 0.1);
+
+                        gain.gain.setValueAtTime(0, this.ctx.currentTime + index * 0.1);
+                        gain.gain.linearRampToValueAtTime(0.2, this.ctx.currentTime + index * 0.1 + 0.05);
+                        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + index * 0.1 + 0.5);
+
+                        osc.connect(gain);
+                        gain.connect(this.ctx.destination);
+
+                        osc.start(this.ctx.currentTime + index * 0.1);
+                        osc.stop(this.ctx.currentTime + index * 0.1 + 0.5);
+                    });
+                } catch (e) {
+                    // Audio fallback
+                }
+            }
+        }
+
+        const soundFX = new SoundEffects();
+
+        // State variables
+        let canvas, ctx;
+        let startAngle = 0;
+        let currentSectorIndex = 0;
+        let isSpinning = false;
+        let spinTimeout = null;
+        let spinAngleStart = 10;
+        let spinTime = 0;
+        let spinTimeTotal = 0;
+        let selectedCategory = 'general';
+        let filteredSectors = [...SECTORS];
+
+        // Init Starfield Canvas Background
+        function initStarfield() {
+            const starCanvas = document.getElementById('starfield');
+            const starCtx = starCanvas.getContext('2d');
+            let width, height, stars = [];
+
+            function resize() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                starCanvas.width = width;
+                starCanvas.height = height;
+                createStars();
+            }
+
+            function createStars() {
+                stars = [];
+                const count = Math.floor((width * height) / 3000);
+                for (let i = 0; i < count; i++) {
+                    stars.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        radius: Math.random() * 1.5,
+                        alpha: Math.random(),
+                        speed: Math.random() * 0.02
+                    });
+                }
+            }
+
+            function drawStars() {
+                starCtx.clearRect(0, 0, width, height);
+                starCtx.fillStyle = '#ffffff';
+
+                stars.forEach(star => {
+                    star.alpha += star.speed;
+                    if (star.alpha > 1 || star.alpha < 0) {
+                        star.speed = -star.speed;
+                    }
+                    starCtx.globalAlpha = Math.abs(star.alpha);
+                    starCtx.beginPath();
+                    starCtx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                    starCtx.fill();
+                });
+
+                requestAnimationFrame(drawStars);
+            }
+
+            window.addEventListener('resize', resize);
+            resize();
+            drawStars();
+        }
+
+        // Draw Canvas Wheel
+        function drawWheel() {
+            if (!canvas) return;
+            ctx = canvas.getContext('2d');
+            const numSectors = filteredSectors.length;
+            const outsideRadius = canvas.width / 2 - 15;
+            const textRadius = outsideRadius - 65;
+            const insideRadius = 55;
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const arc = Math.PI * 2 / numSectors;
+
+            // Outer Glowing Ring
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, outsideRadius + 8, 0, Math.PI * 2);
+            ctx.strokeStyle = '#d4af37';
+            ctx.lineWidth = 3;
+            ctx.shadowColor = '#d4af37';
+            ctx.shadowBlur = 15;
+            ctx.stroke();
+            ctx.restore();
+
+            // Draw Sectors
+            for (let i = 0; i < numSectors; i++) {
+                const angle = startAngle + i * arc;
+                const sector = filteredSectors[i];
+
+                // Gradient for sector
+                const grad = ctx.createRadialGradient(centerX, centerY, insideRadius, centerX, centerY, outsideRadius);
+                grad.addColorStop(0, sector.color1);
+                grad.addColorStop(1, sector.color2);
+
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, outsideRadius, angle, angle + arc, false);
+                ctx.arc(centerX, centerY, insideRadius, angle + arc, angle, true);
+                ctx.fill();
+
+                // Sector Border Lines (Gold)
+                ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                // Draw Text & Symbols
+                ctx.save();
+                ctx.fillStyle = '#fef08a';
+                ctx.shadowColor = 'rgba(0,0,0,0.8)';
+                ctx.shadowBlur = 4;
+                ctx.translate(
+                    centerX + Math.cos(angle + arc / 2) * textRadius,
+                    centerY + Math.sin(angle + arc / 2) * textRadius
+                );
+                ctx.rotate(angle + arc / 2 + Math.PI / 2);
+
+                // Label Text
+                const text = sector.label;
+                ctx.font = 'bold 12px Montserrat, sans-serif';
+                ctx.textAlign = 'center';
+                
+                // Truncate long text if needed for canvas fit
+                const maxLen = 18;
+                const displayText = text.length > maxLen ? text.substring(0, maxLen - 2) + '..' : text;
+                ctx.fillText(displayText, 0, 0);
+
+                ctx.restore();
+            }
+
+            // Inner Decorative Gold Ring
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, insideRadius, 0, Math.PI * 2);
+            ctx.strokeStyle = '#d4af37';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // Spin Logic
+        function rotateWheel() {
+            spinTime += 30;
+            if (spinTime >= spinTimeTotal) {
+                stopRotateWheel();
+                return;
+            }
+
+            // Ease Out Cubic Formula
+            const spinAngle = spinAngleStart - easeOut(spinTime, 0, spinAngleStart, spinTimeTotal);
+            const prevAngle = startAngle;
+            startAngle += (spinAngle * Math.PI / 180);
+
+            // Tick Audio logic when passing sectors
+            const numSectors = filteredSectors.length;
+            const arc = Math.PI * 2 / numSectors;
+            const currentSector = Math.floor((Math.PI * 2 - (startAngle % (Math.PI * 2))) / arc);
+            const prevSector = Math.floor((Math.PI * 2 - (prevAngle % (Math.PI * 2))) / arc);
+
+            if (currentSector !== prevSector) {
+                soundFX.playTick();
+            }
+
+            drawWheel();
+            spinTimeout = setTimeout(rotateWheel, 30);
+        }
+
+        function easeOut(t, b, c, d) {
+            const ts = (t /= d) * t;
+            const tc = ts * t;
+            return b + c * (tc + -3 * ts + 3 * t);
+        }
+
+        function stopRotateWheel() {
+            clearTimeout(spinTimeout);
+            isSpinning = false;
+
+            const numSectors = filteredSectors.length;
+            const degrees = startAngle * 180 / Math.PI + 90;
+            const argrad = 360 / numSectors;
+            let index = Math.floor((360 - (degrees % 360)) / argrad);
+            index = (index + numSectors) % numSectors;
+
+            const winnerSector = filteredSectors[index];
+            
+            soundFX.playWin();
+            showResultModal(winnerSector);
+            updateQuickResult(winnerSector);
+        }
+
+        function spin() {
+            if (isSpinning) return;
+            soundFX.init();
+
+            isSpinning = true;
+            spinAngleStart = Math.random() * 10 + 15; // Random initial speed
+            spinTime = 0;
+            spinTimeTotal = Math.random() * 3000 + 4000; // 4 - 7 seconds
+            rotateWheel();
+        }
+
+        // Modal Display & Interaction
+        function showResultModal(sector) {
+            const modal = document.getElementById('resultModal');
+            const modalBox = modal.querySelector('div');
+            
+            document.getElementById('modalCategory').innerText = sector.category.toUpperCase();
+            document.getElementById('modalTitle').innerText = sector.label;
+            document.getElementById('modalSub').innerText = sector.sub;
+            document.getElementById('modalReading').innerText = sector.reading;
+            
+            // Icon update
+            const iconEl = document.getElementById('modalIcon');
+            iconEl.className = `fa-solid ${sector.icon} text-3xl text-gold`;
+
+            // Open Modal Animation
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modalBox.classList.remove('scale-90');
+            modalBox.classList.add('scale-100');
+        }
+
+        function hideResultModal() {
+            const modal = document.getElementById('resultModal');
+            const modalBox = modal.querySelector('div');
+            
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modalBox.classList.remove('scale-100');
+            modalBox.classList.add('scale-90');
+        }
+
+        function updateQuickResult(sector) {
+            const box = document.getElementById('quickResultBox');
+            const text = document.getElementById('quickResultText');
+            box.classList.remove('hidden');
+            text.innerText = `"${sector.label}" - ${sector.reading.substring(0, 75)}...`;
+        }
+
+        // Toast Notification Helper
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            toastMsg.innerText = message;
+            
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Copy Reading to Clipboard
+        function copyReadingToClipboard() {
+            const title = document.getElementById('modalTitle').innerText;
+            const sub = document.getElementById('modalSub').innerText;
+            const reading = document.getElementById('modalReading').innerText;
+            const textToCopy = `✨ Moja Wróżba Astrologiczna: ${title} (${sub}) ✨\n\n"${reading}"\n\nLosuj swoje przeznaczenie na Astrologiczne Koło Fortuny!`;
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    showToast('Wróżba skopiowana do schowka!');
+                }).catch(() => fallbackCopy(textToCopy));
+            } else {
+                fallbackCopy(textToCopy);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast('Wróżba skopiowana do schowka!');
+            } catch (err) {
+                showToast('Nie udało się skopiować.');
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // Category Filter Handling
+        function filterCategory(category) {
+            selectedCategory = category;
+            if (category === 'general') {
+                filteredSectors = [...SECTORS];
+            } else {
+                filteredSectors = SECTORS.filter(s => s.category === category);
+                if (filteredSectors.length < 4) {
+                    filteredSectors = [...SECTORS];
+                }
+            }
+            startAngle = 0;
+            drawWheel();
+            renderLegend();
+        }
+
+        // DOM Event Listeners Setup
+        window.onload = function() {
+            canvas = document.getElementById('wheelCanvas');
+            
+            // Background Animation Init
+            initStarfield();
+
+            // Render Wheel & Legend
+            drawWheel();
+            renderLegend();
+
+                if (filteredSectors.length < 4) {
+                    filteredSectors = [...SECTORS];
+                }
+            }
+            startAngle = 0;
+            drawWheel();
+        }
+
+        // DOM Event Listeners Setup
+        window.onload = function() {
+            canvas = document.getElementById('wheelCanvas');
+            
+            // Background Animation Init
+            initStarfield();
+
+            // Initial Draw of Wheel
+            drawWheel();
+
+            // Spin Trigger Listeners
+            document.getElementById('spinBtn').addEventListener('click', spin);
+            document.getElementById('spinBtnCenter').addEventListener('click', spin);
+
+            // Modal Close Listeners
+            document.getElementById('closeModal').addEventListener('click', hideResultModal);
+            document.getElementById('spinAgainBtn').addEventListener('click', () => {
+                hideResultModal();
+                setTimeout(spin, 400);
+            });
+
+            // Copy Button
+            document.getElementById('copyBtn').addEventListener('click', copyReadingToClipboard);
+
+            // Audio Toggle Button
+            document.getElementById('soundToggle').addEventListener('click', () => {
+                soundFX.enabled = !soundFX.enabled;
+                const icon = document.getElementById('soundIcon');
+                const text = document.getElementById('soundText');
+
+                if (soundFX.enabled) {
+                    icon.className = 'fa-solid fa-volume-high';
+                    text.innerText = 'Dźwięk: Wł.';
+                } else {
+                    icon.className = 'fa-solid fa-volume-xmark';
+                    text.innerText = 'Dźwięk: Wył.';
+                }
+            });
+
+            // Category Tab Buttons Event Handling
+            const categoryBtns = document.querySelectorAll('.category-btn');
+            categoryBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    if (isSpinning) return;
+
+                    categoryBtns.forEach(b => {
+                        b.classList.remove('bg-gold', 'text-cosmic-dark', 'shadow-md');
+                        b.classList.add('text-purple-200');
+                    });
+
+                    const target = e.currentTarget;
+                    target.classList.add('bg-gold', 'text-cosmic-dark', 'shadow-md');
+                    target.classList.remove('text-purple-200');
+
+                    const cat = target.getAttribute('data-category');
+                    filterCategory(cat);
+                });
+            });
+
+            // Responsive Canvas Resizing
+            window.addEventListener('resize', () => {
+                drawWheel();
+            });
+        };
+    </script>
+</body>
+</html>
