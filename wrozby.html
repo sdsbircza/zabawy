@@ -3,36 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Astrologiczne Koło Fortuny</title>
-    <!-- Tailwind CSS -->
+    <title>Mistyczne Koło Fortuny - Wróżby i Przepowiednie</title>
+
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome Icons -->
+    <!-- Google Fonts: Cinzel & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
+
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        gold: {
-                            light: '#fef08a',
-                            DEFAULT: '#d4af37',
-                            dark: '#aa7c11',
-                        },
-                        cosmic: {
-                            dark: '#090514',
-                            purple: '#1a0b2e',
-                            violet: '#2b1055',
-                            accent: '#7b2cbf',
+                        mystic: {
+                            900: '#0B0719',
+                            800: '#160E33',
+                            700: '#251752',
+                            gold: '#FFD700',
+                            purple: '#9D4EDD',
+                            pink: '#F72585',
+                            cyan: '#4CC9F0'
                         }
                     },
                     fontFamily: {
                         cinzel: ['Cinzel', 'serif'],
-                        montserrat: ['Montserrat', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif']
                     }
                 }
             }
@@ -41,970 +38,620 @@
 
     <style>
         body {
-            background-color: #090514;
-            color: #e2e8f0;
-            font-family: 'Montserrat', sans-serif;
+            background-color: #05030A;
+            color: #E2E8F0;
             overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
         }
 
-        .gold-gradient-text {
-            background: linear-gradient(135deg, #fff3a1 0%, #d4af37 50%, #aa7c11 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .gold-border {
-            border-image: linear-gradient(to bottom right, #ffe57f, #d4af37, #8c6200) 1;
-        }
-
-        .box-glow {
-            box-shadow: 0 0 25px rgba(123, 44, 191, 0.4), 0 0 10px rgba(212, 175, 55, 0.2);
-        }
-
-        .modal-glow {
-            box-shadow: 0 0 50px rgba(123, 44, 191, 0.6), 0 0 20px rgba(212, 175, 55, 0.4);
-        }
-
-        /* Canvas canvas styling */
-        #starfield {
+        /* Tło z gwiezdnym pyłem */
+        #stars-canvas {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             z-index: 0;
             pointer-events: none;
         }
 
-        /* Custom Scrollbar */
+        /* Magiczna poświata wokół elementów */
+        .glow-gold {
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.4);
+        }
+        .glow-purple {
+            box-shadow: 0 0 35px rgba(157, 78, 221, 0.5);
+        }
+        .text-glow {
+            text-shadow: 0 0 12px rgba(255, 215, 0, 0.7);
+        }
+
+        /* Przycisk obrotu z pulsującym efektem */
+        .spin-btn {
+            background: linear-gradient(135deg, #FFD700 0%, #D4AF37 50%, #996515 100%);
+            transition: all 0.3s ease;
+        }
+        .spin-btn:hover:not(:disabled) {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+        }
+        .spin-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            filter: grayscale(0.5);
+        }
+
+        /* Stylizacja scrollbara w historii */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #090514;
+            background: rgba(22, 14, 51, 0.5);
+            border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb {
-            background: #2b1055;
-            border-radius: 4px;
-            border: 1px solid #d4af37;
+            background: rgba(157, 78, 221, 0.5);
+            border-radius: 10px;
         }
-
-        /* Custom animations */
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .animate-float {
-            animation: float 4s ease-in-out infinite;
-        }
-
-        @keyframes pulse-glow {
-            0%, 100% { opacity: 0.6; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)); }
-            50% { opacity: 1; filter: drop-shadow(0 0 25px rgba(212, 175, 55, 0.9)); }
-        }
-
-        .animate-pulse-glow {
-            animation: pulse-glow 3s infinite;
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 215, 0, 0.8);
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between relative selection:bg-purple-900 selection:text-gold-light">
+<body class="min-h-screen flex flex-col relative selection:bg-mystic-purple selection:text-white">
 
-    <!-- Background Starfield Canvas -->
-    <canvas id="starfield"></canvas>
+    <!-- Tło ze spadającymi gwiazdami -->
+    <canvas id="stars-canvas"></canvas>
 
-    <!-- Main Container -->
-    <div class="relative z-10 flex flex-col min-h-screen">
+    <!-- Główny Kontener -->
+    <div class="relative z-10 flex-grow flex flex-col items-center justify-between p-4 md:p-8 max-w-7xl mx-auto w-full">
         
-        <!-- Header -->
-        <header class="py-6 px-4 text-center border-b border-purple-900/40 bg-cosmic-purple/60 backdrop-blur-md sticky top-0 z-20">
-            <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex items-center gap-3">
-                    <i class="fa-solid font-cinzel fa-moon text-gold text-2xl animate-pulse-glow"></i>
-                    <h1 class="font-cinzel text-2xl md:text-3xl font-bold tracking-wider gold-gradient-text">
-                        AstroFortuna
-                    </h1>
-                </div>
-                <p class="text-xs md:text-sm text-purple-200/80 font-cinzel tracking-widest uppercase">
-                    Odkryj tajemnice gwiazd &bull; Astrologiczne Koło Przeznaczenia
-                </p>
-                <button id="soundToggle" class="px-3 py-1.5 rounded-full border border-gold/40 text-xs font-semibold text-gold hover:bg-gold/10 transition-all flex items-center gap-2">
-                    <i class="fa-solid fa-volume-high" id="soundIcon"></i>
-                    <span id="soundText">Dźwięk: Wł.</span>
-                </button>
+        <!-- Nagłówek -->
+        <header class="text-center my-4">
+            <div class="inline-block px-4 py-1 rounded-full border border-mystic-gold/30 bg-mystic-800/50 backdrop-blur-md mb-2">
+                <span class="text-mystic-gold text-xs md:text-sm tracking-widest uppercase font-cinzel font-semibold">
+                    <i class="fa-solid font-normal fa-star mr-1"></i> Wyrocznia Przeznaczenia <i class="fa-solid font-normal fa-star ml-1"></i>
+                </span>
             </div>
+            <h1 class="text-3xl md:text-5xl font-black font-cinzel text-transparent bg-clip-text bg-gradient-to-r from-mystic-gold via-pink-300 to-mystic-purple text-glow tracking-wide">
+                MISTYCZNE KOŁO FORTUNY
+            </h1>
+            <p class="text-slate-400 text-sm md:text-base mt-2 max-w-xl mx-auto">
+                Wybierz kategorię lub pozwól losowi zadecydować. Zakręć kołem i poznaj tajemnice swojej przyszłości.
+            </p>
         </header>
 
-        <!-- Main Content Area -->
-        <main class="flex-grow flex flex-col items-center justify-center p-4 md:p-8 max-w-6xl mx-auto w-full">
+        <!-- Filtry Kategorii -->
+        <div class="w-full flex justify-center mb-6 overflow-x-auto py-2 px-4 no-scrollbar">
+            <div class="flex gap-2 md:gap-3 bg-mystic-900/80 p-2 rounded-2xl border border-mystic-purple/30 backdrop-blur-md">
+                <button onclick="setCategory('all')" id="cat-all" class="cat-btn px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all duration-300 bg-mystic-purple text-white shadow-lg">
+                    ✨ Wszystkie
+                </button>
+                <button onclick="setCategory('love')" id="cat-love" class="cat-btn px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-slate-300 hover:text-white hover:bg-mystic-800 transition-all duration-300">
+                    🔮 Miłość
+                </button>
+                <button onclick="setCategory('wealth')" id="cat-wealth" class="cat-btn px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-slate-300 hover:text-white hover:bg-mystic-800 transition-all duration-300">
+                    💰 Bogactwo
+                </button>
+                <button onclick="setCategory('fate')" id="cat-fate" class="cat-btn px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-slate-300 hover:text-white hover:bg-mystic-800 transition-all duration-300">
+                    🌟 Magia
+                </button>
+                <button onclick="setCategory('travel')" id="cat-travel" class="cat-btn px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-slate-300 hover:text-white hover:bg-mystic-800 transition-all duration-300">
+                    ✈️ Przygody
+                </button>
+                <button onclick="setCategory('health')" id="cat-health" class="cat-btn px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-slate-300 hover:text-white hover:bg-mystic-800 transition-all duration-300">
+                    🍀 Pomyślność
+                </button>
+            </div>
+        </div>
+
+        <!-- Sekcja Główna z Kołem i Historią -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full items-center my-auto">
             
-            <!-- Category Tabs -->
-            <div class="w-full max-w-xl mb-6">
-                <div class="flex justify-center bg-cosmic-purple/80 backdrop-blur-md p-1.5 rounded-2xl border border-gold/30 shadow-lg gap-1">
-                    <button data-category="general" class="category-btn active flex-1 py-2 px-3 rounded-xl text-xs sm:text-sm font-cinzel font-semibold transition-all duration-300 bg-gold text-cosmic-dark shadow-md">
-                        <i class="fa-solid fa-sparkles mr-1.5"></i>Wszystkie
+            <!-- Panel Boczny Lewy: Przełącznik Dźwięku i Statystyki -->
+            <div class="hidden lg:flex lg:col-span-3 flex-col gap-4 order-2 lg:order-1">
+                <div class="bg-mystic-800/40 border border-mystic-purple/20 p-5 rounded-2xl backdrop-blur-md">
+                    <h3 class="font-cinzel font-bold text-mystic-gold mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-volume-high"></i> Dźwięk Mistyczny
+                    </h3>
+                    <p class="text-xs text-slate-400 mb-4">Włącz efekty dźwiękowe podczas obrotów koła dla pełniejszego doświadczenia.</p>
+                    <button id="sound-toggle-btn" onclick="toggleAudio()" class="w-full py-2.5 px-4 rounded-xl border border-mystic-gold/40 text-mystic-gold hover:bg-mystic-gold/10 font-semibold text-sm transition-all flex items-center justify-center gap-2">
+                        <i id="sound-icon" class="fa-solid fa-volume-high"></i> Dźwięk: Włączony
                     </button>
-                    <button data-category="love" class="category-btn flex-1 py-2 px-3 rounded-xl text-xs sm:text-sm font-cinzel font-semibold text-purple-200 hover:text-white hover:bg-purple-800/40 transition-all duration-300">
-                        <i class="fa-solid fa-heart mr-1.5"></i>Miłość
-                    </button>
-                    <button data-category="career" class="category-btn flex-1 py-2 px-3 rounded-xl text-xs sm:text-sm font-cinzel font-semibold text-purple-200 hover:text-white hover:bg-purple-800/40 transition-all duration-300">
-                        <i class="fa-solid fa-coins mr-1.5"></i>Kariera
-                    </button>
-                    <button data-category="spirit" class="category-btn flex-1 py-2 px-3 rounded-xl text-xs sm:text-sm font-cinzel font-semibold text-purple-200 hover:text-white hover:bg-purple-800/40 transition-all duration-300">
-                        <i class="fa-solid fa-eye mr-1.5"></i>Duchowe
-                    </button>
+                </div>
+
+                <div class="bg-mystic-800/40 border border-mystic-purple/20 p-5 rounded-2xl backdrop-blur-md">
+                    <h3 class="font-cinzel font-bold text-mystic-gold mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-gem"></i> Twoje Losowania
+                    </h3>
+                    <div class="text-3xl font-bold font-cinzel text-white" id="spin-count">0</div>
+                    <p class="text-xs text-slate-400 mt-1">Liczba odsłoniętych tajemnic w tej sesji.</p>
                 </div>
             </div>
 
-            <!-- Wheel Section Container -->
-            <div class="relative flex flex-col items-center justify-center my-4">
-                
-                <!-- Pointer/Arrow Indicator -->
-                <div class="absolute -top-6 z-20 flex flex-col items-center filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">
-                    <div class="w-8 h-10 bg-gradient-to-b from-yellow-200 via-gold to-gold-dark clip-polygon-pointer transform rotate-180 border-t-2 border-white"></div>
-                    <i class="fa-solid fa-gem text-gold text-xs -mt-9 animate-pulse"></i>
-                </div>
-
-                <!-- Canvas Wheel Box -->
-                <div class="relative p-3 rounded-full bg-gradient-to-b from-gold/30 via-purple-900/20 to-gold/10 border-2 border-gold/40 box-glow backdrop-blur-sm">
-                    <canvas id="wheelCanvas" width="460" height="460" class="max-w-full h-auto cursor-pointer rounded-full"></canvas>
+            <!-- Koło Fortuny (Centralny punkt) -->
+            <div class="lg:col-span-6 flex flex-col items-center justify-center order-1 lg:order-2">
+                <div class="relative w-full max-w-[360px] sm:max-w-[440px] aspect-square flex items-center justify-center">
                     
-                    <!-- Center Spin Button -->
-                    <button id="spinBtnCenter" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-br from-purple-900 via-cosmic-purple to-cosmic-dark border-4 border-gold shadow-[0_0_20px_rgba(212,175,55,0.6)] flex flex-col items-center justify-center group hover:scale-105 active:scale-95 transition-all duration-300 z-10">
-                        <i class="fa-solid fa-sun text-gold text-xl md:text-2xl group-hover:rotate-45 transition-transform duration-500 mb-0.5"></i>
-                        <span class="font-cinzel text-xs md:text-sm font-bold gold-gradient-text tracking-wider uppercase">Zakręć</span>
+                    <!-- Pierścień Neonowy Tła -->
+                    <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-mystic-purple via-mystic-pink to-mystic-gold opacity-30 blur-2xl transform scale-105"></div>
+                    
+                    <!-- Wskaźnik (Igła na górze koła) -->
+                    <div class="absolute -top-3 z-30 flex flex-col items-center filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)]">
+                        <div class="w-8 h-10 bg-gradient-to-b from-mystic-gold to-yellow-600 clip-pointer"></div>
+                        <div class="w-4 h-4 bg-mystic-gold rounded-full border-2 border-mystic-900 -mt-2 shadow-inner"></div>
+                    </div>
+
+                    <!-- Canvas Koła -->
+                    <div class="w-full h-full p-3 rounded-full bg-mystic-900/80 border-4 border-mystic-gold/40 shadow-2xl backdrop-blur-sm relative overflow-hidden glow-purple">
+                        <canvas id="wheel-canvas" class="w-full h-full rounded-full cursor-pointer transition-transform duration-1000"></canvas>
+                    </div>
+
+                    <!-- Środek Koła -->
+                    <div class="absolute z-20 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-mystic-900 via-mystic-800 to-black border-2 border-mystic-gold flex items-center justify-center shadow-2xl">
+                        <i class="fa-solid fa-eye text-mystic-gold text-2xl sm:text-3xl animate-pulse"></i>
+                    </div>
+                </div>
+
+                <!-- Przycisk Obrotu -->
+                <button id="spin-button" onclick="spinWheel()" class="spin-btn mt-8 px-8 sm:px-12 py-4 rounded-full font-cinzel font-black text-mystic-900 text-lg sm:text-xl tracking-wider shadow-xl flex items-center gap-3">
+                    <span>ZAKRĘĆ KOŁEM</span>
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </button>
+            </div>
+
+            <!-- Panel Boczny Prawy: Historia Wróżb -->
+            <div class="lg:col-span-3 w-full order-3">
+                <!-- Mobile Sound & Stat Toggle -->
+                <div class="flex lg:hidden justify-between items-center bg-mystic-800/40 border border-mystic-purple/20 p-3 rounded-xl mb-4 backdrop-blur-md">
+                    <button onclick="toggleAudio()" class="text-xs text-mystic-gold flex items-center gap-2">
+                        <i id="sound-icon-mobile" class="fa-solid fa-volume-high"></i> Dźwięk: ON
                     </button>
+                    <span class="text-xs text-slate-300">Losowań: <strong id="spin-count-mobile" class="text-mystic-gold">0</strong></span>
                 </div>
 
-                <!-- Outer Control Spin Button (Mobile Friendly) -->
-                <div class="mt-8 flex flex-col sm:flex-row gap-4 items-center">
-                    <button id="spinBtn" class="px-8 py-3.5 rounded-full bg-gradient-to-r from-gold-dark via-gold to-gold-light text-cosmic-dark font-cinzel font-bold text-base md:text-lg tracking-widest shadow-[0_0_25px_rgba(212,175,55,0.4)] hover:shadow-[0_0_35px_rgba(212,175,55,0.7)] hover:scale-105 active:scale-95 transition-all duration-300 uppercase flex items-center gap-3">
-                        <i class="fa-solid fa-arrows-spin text-xl"></i>
-                        <span>Poznaj Przeznaczenie</span>
-                    </button>
+                <div class="bg-mystic-800/40 border border-mystic-purple/20 p-5 rounded-2xl backdrop-blur-md h-64 lg:h-[400px] flex flex-col">
+                    <h3 class="font-cinzel font-bold text-mystic-gold mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-scroll"></i> Dziennik Przepowiedni
+                    </h3>
+                    <div id="history-list" class="flex-grow overflow-y-auto space-y-3 pr-1 text-xs sm:text-sm">
+                        <div class="text-slate-500 text-center py-8 italic" id="empty-history">
+                            Twój dziennik jest jeszcze pusty.<br>Zakręć kołem, aby poznać przyszłość.
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Symbol Legend Section -->
-            <div class="w-full max-w-4xl mt-8 p-5 rounded-2xl bg-cosmic-purple/60 border border-gold/30 backdrop-blur-md shadow-lg">
-                <h3 class="font-cinzel text-center text-sm md:text-base font-bold gold-gradient-text mb-4 uppercase tracking-widest flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-book-bookmark text-gold"></i> Legenda Symboli Astrologicznych
-                </h3>
-                <div id="legendGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 text-xs font-cinzel">
-                    <!-- Dynamic Grid Items generated by JS -->
-                </div>
-            </div>
-
-            <!-- Recent History / Encouragement Banner -->
-            <div id="quickResultBox" class="mt-6 w-full max-w-xl text-center p-4 rounded-2xl bg-cosmic-purple/40 border border-purple-800/40 backdrop-blur-md hidden transition-all duration-500">
-                <span class="text-xs uppercase font-cinzel text-gold/70 tracking-widest block mb-1">Ostatnio Wylosowano</span>
-                <p id="quickResultText" class="font-cinzel text-lg text-purple-100 font-semibold"></p>
-            </div>
-
-        </main>
-
-        <!-- Footer -->
-        <footer class="py-4 px-4 text-center border-t border-purple-900/30 text-xs text-purple-300/60 font-cinzel">
-            <p>&copy; Astrologiczne Koło Fortuny &bull; Wszystkie wróżby są inspiracją dla Twojej własnej intuicji</p>
+        <!-- Stopka -->
+        <footer class="mt-8 text-center text-slate-500 text-xs">
+            <p>© Mistyczne Koło Fortuny • Przepowiednie mają charakter rozrywkowy</p>
         </footer>
-
     </div>
 
-    <!-- Modal for Result Reading -->
-    <div id="resultModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
-        <div class="relative w-full max-w-xl bg-gradient-to-b from-cosmic-purple via-cosmic-dark to-purple-950 rounded-3xl border-2 border-gold/60 p-6 sm:p-8 modal-glow transform scale-90 transition-transform duration-300 text-center overflow-hidden">
+    <!-- Modal z Wróżbą (Popup) -->
+    <div id="fortune-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-500">
+        <div class="relative w-full max-w-md bg-gradient-to-b from-mystic-800 to-mystic-900 border-2 border-mystic-gold rounded-3xl p-6 sm:p-8 text-center shadow-2xl transform scale-90 transition-transform duration-500 glow-gold" id="modal-content">
             
-            <!-- Modal Ambient Glow Background -->
-            <div class="absolute -top-24 -left-24 w-48 h-48 bg-gold/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-purple-600/20 rounded-full blur-3xl pointer-events-none"></div>
-
-            <!-- Close Button -->
-            <button id="closeModal" class="absolute top-4 right-4 text-purple-300 hover:text-gold text-xl w-10 h-10 rounded-full bg-purple-950/60 border border-purple-700/40 flex items-center justify-center transition-all">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-            <!-- Icon Header -->
-            <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-purple-900/50 border border-gold/50 flex items-center justify-center box-glow animate-float">
-                <i id="modalIcon" class="fa-solid fa-star text-3xl text-gold"></i>
+            <!-- Ozdobny Gwiazdozbiór na Górze -->
+            <div class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 bg-mystic-gold rounded-full border-4 border-mystic-900 flex items-center justify-center text-mystic-900 text-xl shadow-lg">
+                <i class="fa-solid fa-star" id="modal-icon"></i>
             </div>
 
-            <!-- Category & Title -->
-            <span id="modalCategory" class="text-xs font-cinzel tracking-widest text-gold uppercase px-3 py-1 rounded-full bg-gold/10 border border-gold/30">
+            <span class="inline-block mt-3 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-mystic-purple/30 border border-mystic-purple/50 text-mystic-gold" id="modal-category">
                 Kategoria
             </span>
-            
-            <h2 id="modalTitle" class="font-cinzel text-2xl sm:text-3xl font-bold gold-gradient-text mt-3 mb-2">
-                Nazwa Sektora
+
+            <h2 class="font-cinzel text-2xl font-bold text-white mt-4 mb-3" id="modal-title">
+                Twoja Przepowiednia
             </h2>
 
-            <!-- Sign Symbol / Element -->
-            <div id="modalSub" class="text-xs font-cinzel text-purple-300 tracking-wider mb-4 italic">
-                Element Koziorożca &bull; Żywioł Ziemi
+            <div class="my-6 p-4 rounded-2xl bg-mystic-900/60 border border-mystic-gold/20 text-slate-200 text-base sm:text-lg leading-relaxed font-serif italic" id="modal-text">
+                "Niespodziewana wiadomość od kogoś z przeszłości zmieni Twój dzień..."
             </div>
 
-            <!-- Reading Body -->
-            <div class="my-6 p-4 rounded-2xl bg-purple-950/40 border border-purple-800/40 text-purple-100 text-sm sm:text-base leading-relaxed text-justify max-h-60 overflow-y-auto">
-                <p id="modalReading">
-                    Tutaj pojawi się treść astrologicznej przepowiedni...
-                </p>
-            </div>
-
-            <!-- Actions Buttons -->
-            <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
-                <button id="copyBtn" class="w-full sm:w-auto px-6 py-2.5 rounded-full border border-gold/50 text-gold hover:bg-gold/10 font-cinzel text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-copy"></i>
-                    <span id="copyBtnText">Kopiuj wróżbę</span>
+            <div class="flex flex-col sm:flex-row gap-3 mt-6">
+                <button onclick="shareFortune()" class="flex-1 py-3 px-4 rounded-xl border border-mystic-gold/50 text-mystic-gold hover:bg-mystic-gold/10 font-semibold text-sm transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-share-nodes"></i> Udostępnij
                 </button>
-                <button id="spinAgainBtn" class="w-full sm:w-auto px-6 py-2.5 rounded-full bg-gradient-to-r from-gold-dark to-gold text-cosmic-dark font-cinzel text-xs sm:text-sm font-bold transition-all shadow-md hover:scale-105 active:scale-95 flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-rotate-right"></i>
-                    <span>Losuj Ponownie</span>
+                <button onclick="closeModal()" class="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-mystic-gold to-yellow-600 text-mystic-900 font-bold text-sm hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-lg">
+                    <span>Zamknij</span>
+                    <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-
         </div>
     </div>
 
-    <!-- Notification Toast -->
-    <div id="toast" class="fixed bottom-6 right-6 z-50 bg-cosmic-purple border border-gold/60 text-gold px-4 py-3 rounded-2xl shadow-xl transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-3">
-        <i class="fa-solid fa-circle-check"></i>
-        <span id="toastMsg" class="text-xs font-cinzel font-semibold">Skopiowano do schowka!</span>
-    </div>
-
-    <!-- Arrow Pointer Style Helper -->
-    <style>
-        .clip-polygon-pointer {
-            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-        }
-    </style>
-
-    <!-- Application Script -->
+    <!-- Skrypt Gry -->
     <script>
-        /**
-         * ASTROLOGICAL WHEEL OF FORTUNE - COMPLETE JS LOGIC
-         */
+        // Baza wróżb podzielona na kategorie
+        const fortunesData = [
+            // Miłość i Relacje
+            { id: 1, category: 'love', catName: 'Miłość', icon: 'fa-heart', color: '#F72585', text: 'Niespodziewana wiadomość od kogoś z przeszłości zmieni Twój dzień na lepsze.' },
+            { id: 2, category: 'love', catName: 'Miłość', icon: 'fa-heart', color: '#F72585', text: 'Twój czar i naturalność przyciągną dzisiaj niezwykłą, wartościową osobę.' },
+            { id: 3, category: 'love', catName: 'Miłość', icon: 'fa-heart', color: '#F72585', text: 'Szczera rozmowa przy świecach rozwieje wszelkie dotychczasowe wątpliwości.' },
+            { id: 4, category: 'love', catName: 'Miłość', icon: 'fa-heart', color: '#F72585', text: 'Otwórz serce – ktoś blisko Ciebie darzy Cię uczuciem, o którym nie miałeś pojęcia.' },
+            
+            // Bogactwo i Kariera
+            { id: 5, category: 'wealth', catName: 'Bogactwo', icon: 'fa-coins', color: '#FFD700', text: 'Zbliża się okazja do znacznego zysku – bądź czujny w ciągu najbliższych dni.' },
+            { id: 6, category: 'wealth', catName: 'Bogactwo', icon: 'fa-coins', color: '#FFD700', text: 'Nowy projekt lub pomysł przyniesie Ci uznanie przełożonych i większe finanse.' },
+            { id: 7, category: 'wealth', catName: 'Bogactwo', icon: 'fa-coins', color: '#FFD700', text: 'Inwestycja w rozwój własnych umiejętności zwróci się z potrójną siłą.' },
+            { id: 8, category: 'wealth', catName: 'Bogactwo', icon: 'fa-coins', color: '#FFD700', text: 'Unikaj pochopnych wydatków, a pod koniec miesiąca czeka Cię miła niespodzianka.' },
 
-        // Data Base: 12 Sectors representing Zodiac/Astrological Themes with Astro Unicode / Icons
-        const SECTORS = [
-            {
-                id: 'aries',
-                label: 'Baran: Ogień Działania',
-                zodiacSymbol: '♈',
-                icon: 'fa-fire',
-                color1: '#4a121a',
-                color2: '#2b0910',
-                category: 'general',
-                sub: 'Baran (21.03 - 19.04) • Ogień • Mars',
-                reading: 'Czas odważyć się na krok, którego od dawna się obawiasz. Twoja wewnętrzna iskra stanie się płomieniem sukcesu, jeśli nie lękasz się przejąć inicjatywy. Gwiazdy zwiastują przełom w sprawach wymagających odwagi.'
-            },
-            {
-                id: 'taurus',
-                label: 'Byk: Finanse & Obfitość',
-                zodiacSymbol: '♉',
-                icon: 'fa-coins',
-                color1: '#1b3b22',
-                color2: '#0d1f12',
-                category: 'career',
-                sub: 'Byk (20.04 - 20.05) • Ziemia • Wenus',
-                reading: 'Stabilizacja i zasłużony owoc Twoich starań są już na horyzoncie. Zainwestuj czas w to, co buduje Twoje poczucie bezpieczeństwa. Kosmos sprzyja decyzjom finansowym i budowaniu trwałych fundamentów.'
-            },
-            {
-                id: 'gemini',
-                label: 'Bliźnięta: Magia Słowa',
-                zodiacSymbol: '♊',
-                icon: 'fa-comments',
-                color1: '#3b3212',
-                color2: '#1f1a09',
-                category: 'general',
-                sub: 'Bliźnięta (21.05 - 20.06) • Powietrze • Merkury',
-                reading: 'Kluczem do rozwiązania obecnej zagadki jest szczera rozmowa. Wiadomość, którą wkrótce otrzymasz, rzuci nowe światło na Twoje plany. Bądź otwarty na nowe pomysły i niespodziewane spotkania.'
-            },
-            {
-                id: 'cancer',
-                label: 'Rak: Głębokie Uczucia',
-                zodiacSymbol: '♋',
-                icon: 'fa-heart',
-                color1: '#122c3b',
-                color2: '#09171f',
-                category: 'love',
-                sub: 'Rak (21.06 - 22.07) • Woda • Księżyc',
-                reading: 'Twoja intuicja osiąga najwyższy poziom. Posłuchaj głosu serca, a nie chłodnej kalkulacji. W relacjach nadejdzie czas głębokiego zrozumienia, wybaczenia i prawdziwego zbliżenia emocjonalnego.'
-            },
-            {
-                id: 'leo',
-                label: 'Lew: Blask & Pewność',
-                zodiacSymbol: '♌',
-                icon: 'fa-crown',
-                color1: '#4a3000',
-                color2: '#2b1b00',
-                category: 'career',
-                sub: 'Lew (23.07 - 22.08) • Ogień • Słońce',
-                reading: 'Przestań ukrywać swoje talenty w cieniu. Nadszedł Twój czas, by błyszczeć na scenie życia. Twoja charyzma przyciągnie odpowiednich ludzi, a Twoje starania zostaną dostrzeżone i docenione.'
-            },
-            {
-                id: 'virgo',
-                label: 'Panna: Ład i Uzdrowienie',
-                zodiacSymbol: '♍',
-                icon: 'fa-leaf',
-                color1: '#18362b',
-                color2: '#0c1c16',
-                category: 'spirit',
-                sub: 'Panna (23.08 - 22.09) • Ziemia • Merkury',
-                reading: 'Uporządkuj swoją przestrzeń i umysł. Małe, codzienne nawyki doprowadzą Cię do wielkiego celu. To doskonały czas na zadbanie o zdrowie, ciało i odnalezienie wewnętrznej harmonii.'
-            },
-            {
-                id: 'libra',
-                label: 'Waga: Miłość i Harmonia',
-                zodiacSymbol: '♎',
-                icon: 'fa-scale-balanced',
-                color1: '#371836',
-                color2: '#1e0c1d',
-                category: 'love',
-                sub: 'Waga (23.09 - 22.10) • Powietrze • Wenus',
-                reading: 'Nadejdzie oczekiwana równowaga w relacjach z bliźnimi. Wszelkie spory znajdą łagodne rozwiązanie. Pozwól sobie na piękno, sztukę i otwórz serce na nową lub odnowioną miłość.'
-            },
-            {
-                id: 'scorpio',
-                label: 'Skorpion: Transformacja',
-                zodiacSymbol: '♏',
-                icon: 'fa-wand-magic-sparkles',
-                color1: '#2b0b28',
-                color2: '#170515',
-                category: 'spirit',
-                sub: 'Skorpion (23.10 - 21.11) • Woda • Pluton',
-                reading: 'Coś się kończy, by zrobić miejsce na nowe i znacznie potężniejsze doświadczenie. Nie bój się odpuścić starego. Twoja odrodzona energia przyniesie Ci niezwykłą siłę i duchowy przełom.'
-            },
-            {
-                id: 'sagittarius',
-                label: 'Strzelec: Nowe Horyzonty',
-                zodiacSymbol: '♐',
-                icon: 'fa-compass',
-                color1: '#102738',
-                color2: '#08141d',
-                category: 'general',
-                sub: 'Strzelec (22.11 - 21.12) • Ogień • Jowisz',
-                reading: 'Czeka Cię przygoda – fizyczna lub intelektualna! Los sprzyja poszerzaniu horyzontów, nauce i podróżom. Zaufaj swojej szczęśliwej gwieździe, bo Jowisz roztacza nad Tobą opiekę.'
-            },
-            {
-                id: 'capricorn',
-                label: 'Koziorożec: Ambicja & Szczyt',
-                zodiacSymbol: '♑',
-                icon: 'fa-mountain',
-                color1: '#262419',
-                color2: '#14130d',
-                category: 'career',
-                sub: 'Koziorożec (22.12 - 19.01) • Ziemia • Saturn',
-                reading: 'Twoja cierpliwość i konsekwencja zaczną przynosić trwałe efekty. Wspinaczka na Twój prywatny szczyt jest bliska finału. Pamiętaj, że konsekwencja to cecha zwycięzców.'
-            },
-            {
-                id: 'aquarius',
-                label: 'Wodnik: Błysk Geniuszu',
-                zodiacSymbol: '♒',
-                icon: 'fa-lightbulb',
-                color1: '#0f3138',
-                color2: '#07191d',
-                category: 'spirit',
-                sub: 'Wodnik (20.01 - 18.02) • Powietrze • Uran',
-                reading: 'Wpadniesz na innowacyjny pomysł, który zmieni Twój punkt widzenia. Nie bój się wyłamać ze schematów i myśleć inaczej niż reszta. Twój unikalny punkt widzenia jest Twoją największą mocą.'
-            },
-            {
-                id: 'pisces',
-                label: 'Ryby: Mistyczna Wizja',
-                zodiacSymbol: '♓',
-                icon: 'fa-eye',
-                color1: '#241338',
-                color2: '#12091c',
-                category: 'love',
-                sub: 'Ryby (19.02 - 20.03) • Woda • Neptun',
-                reading: 'Zwróć uwagę na swoje sny i znaki przesłane przez Wszechświat. Twój duchowy przewodnik podpowiada Ci właściwą drogę. Czas na wyciszenie, medytację i artystyczną ekspresję.'
-            }
+            // Przeznaczenie i Magia
+            { id: 9, category: 'fate', catName: 'Magia', icon: 'fa-wand-magic-sparkles', color: '#9D4EDD', text: 'Wkrótce rozwiąże się zagadka, która od dawna nie dawała Ci spokoju.' },
+            { id: 10, category: 'fate', catName: 'Magia', icon: 'fa-wand-magic-sparkles', color: '#9D4EDD', text: 'Zaufaj swojej intuicji – Twój wewnętrzny głos wskaże Ci właściwą ścieżkę.' },
+            { id: 11, category: 'fate', catName: 'Magia', icon: 'fa-wand-magic-sparkles', color: '#9D4EDD', text: 'Sen, który niedawno widziałeś, zawiera klucz do Twojej najbliższej przyszłości.' },
+            { id: 12, category: 'fate', catName: 'Magia', icon: 'fa-wand-magic-sparkles', color: '#9D4EDD', text: 'Dobre uczynki z przeszłości powrócą do Ciebie pod postacią niezwykłego zbiegu okoliczności.' },
+
+            // Podróże i Przygody
+            { id: 13, category: 'travel', catName: 'Przygoda', icon: 'fa-compass', color: '#4CC9F0', text: 'Niespodziewana podróż otworzy przed Tobą całkiem nowe horyzonty.' },
+            { id: 14, category: 'travel', catName: 'Przygoda', icon: 'fa-compass', color: '#4CC9F0', text: 'Czas wyjść ze strefy komfortu! Nowe miejsce przyniesie Ci wielką inspirację.' },
+            { id: 15, category: 'travel', catName: 'Przygoda', icon: 'fa-compass', color: '#4CC9F0', text: 'Spotkanie w drodze z nieznajomym odmieni Twoje spojrzenie na pewną sprawę.' },
+
+            // Pomyślność i Zdrowie
+            { id: 16, category: 'health', catName: 'Pomyślność', icon: 'fa-clover', color: '#2ECC71', text: 'Twoja energia życiowa osiągnie szczytowy poziom – wykorzystaj ten czas!' },
+            { id: 17, category: 'health', catName: 'Pomyślność', icon: 'fa-clover', color: '#2ECC71', text: 'Odnajdziesz długo wyczekiwaną harmonijkę i spokój ducha pośród codziennego zgiełku.' },
+            { id: 18, category: 'health', catName: 'Pomyślność', icon: 'fa-clover', color: '#2ECC71', text: 'Drobny gest życzliwości sprawi, że cały Twój tydzień wypełni się pozytywną aurą.' }
         ];
 
-        // Web Audio API Sound Generator
-        // Draw Canvas Wheel with Astrological Icons & Glyphs instead of plain text
+        // Zmienne Stanu
+        let activeFortunes = [...fortunesData];
+        let currentRotation = 0;
+        let isSpinning = false;
+        let soundEnabled = true;
+        let spinCount = 0;
+        let currentFortune = null;
+
+        // Elementy DOM
+        const canvas = document.getElementById('wheel-canvas');
+        const ctx = canvas.getContext('2d');
+        const spinBtn = document.getElementById('spin-button');
+
+        // Web Audio API dla Efektów Dźwiękowych
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        // Generowanie dźwięku cyknięcia koła
+        function playTickSound() {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.04);
+                
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.04);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.04);
+            } catch (e) {}
+        }
+
+        // Generowanie dźwięku wygranej/przepowiedni
+        function playWinSound() {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                const notes = [261.63, 329.63, 392.00, 523.25]; // C E G C
+                notes.forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.1);
+                    
+                    gain.gain.setValueAtTime(0, audioCtx.currentTime + idx * 0.1);
+                    gain.gain.linearRampToValueAtTime(0.2, audioCtx.currentTime + idx * 0.1 + 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.1 + 0.5);
+                    
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    
+                    osc.start(audioCtx.currentTime + idx * 0.1);
+                    osc.stop(audioCtx.currentTime + idx * 0.1 + 0.5);
+                });
+            } catch (e) {}
+        }
+
+        function toggleAudio() {
+            soundEnabled = !soundEnabled;
+            const text = soundEnabled ? 'Dźwięk: Włączony' : 'Dźwięk: Wyłączony';
+            const iconClass = soundEnabled ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark';
+            
+            document.getElementById('sound-toggle-btn').innerHTML = `<i class="${iconClass}"></i> ${text}`;
+            document.getElementById('sound-icon-mobile').className = iconClass;
+            document.getElementById('spin-count-mobile').nextSibling.textContent = soundEnabled ? ' ON' : ' OFF';
+        }
+
+        // Dopasowanie rozmiaru Canvasu
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            const size = container.clientWidth;
+            canvas.width = size * window.devicePixelRatio;
+            canvas.height = size * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            drawWheel();
+        }
+
+        // Rysowanie Koła Fortuny
         function drawWheel() {
-            if (!canvas) return;
-            ctx = canvas.getContext('2d');
-            const numSectors = filteredSectors.length;
-            const outsideRadius = canvas.width / 2 - 15;
-            const textRadius = outsideRadius - 60;
-            const iconRadius = outsideRadius - 110;
-            const insideRadius = 55;
+            const size = canvas.width / window.devicePixelRatio;
+            const center = size / 2;
+            const radius = center - 8;
+            const numSegments = activeFortunes.length;
+            const anglePerSegment = (2 * Math.PI) / numSegments;
 
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
+            ctx.clearRect(0, 0, size, size);
 
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < numSegments; i++) {
+                const item = activeFortunes[i];
+                const startAngle = i * anglePerSegment + currentRotation;
+                const endAngle = startAngle + anglePerSegment;
 
-            const arc = Math.PI * 2 / numSectors;
-
-            // Outer Glowing Ring
-            ctx.save();
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, outsideRadius + 8, 0, Math.PI * 2);
-            ctx.strokeStyle = '#d4af37';
-            ctx.lineWidth = 3;
-            ctx.shadowColor = '#d4af37';
-            ctx.shadowBlur = 15;
-            ctx.stroke();
-            ctx.restore();
-
-            // Draw Sectors
-            for (let i = 0; i < numSectors; i++) {
-                const angle = startAngle + i * arc;
-                const sector = filteredSectors[i];
-
-                // Gradient for sector
-                const grad = ctx.createRadialGradient(centerX, centerY, insideRadius, centerX, centerY, outsideRadius);
-                grad.addColorStop(0, sector.color1);
-                grad.addColorStop(1, sector.color2);
-
-                ctx.fillStyle = grad;
+                // Rysowanie wycinka koła
                 ctx.beginPath();
-                ctx.arc(centerX, centerY, outsideRadius, angle, angle + arc, false);
-                ctx.arc(centerX, centerY, insideRadius, angle + arc, angle, true);
+                ctx.moveTo(center, center);
+                ctx.arc(center, center, radius, startAngle, endAngle);
+                ctx.closePath();
+
+                // Gradient wycinka
+                const grad = ctx.createRadialGradient(center, center, 20, center, center, radius);
+                grad.addColorStop(0, '#160E33');
+                grad.addColorStop(1, item.color);
+                
+                ctx.fillStyle = grad;
                 ctx.fill();
 
-                // Sector Border Lines (Gold)
-                ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
+                // Złota krawędź wycinka
                 ctx.lineWidth = 1.5;
+                ctx.strokeStyle = '#FFD700';
                 ctx.stroke();
 
-                // Render Zodiac Glyphs & Graphical Symbols
+                // Dodanie tekstu/ikony na wycinku
                 ctx.save();
-                ctx.translate(
-                    centerX + Math.cos(angle + arc / 2) * textRadius,
-                    centerY + Math.sin(angle + arc / 2) * textRadius
-                );
-                ctx.rotate(angle + arc / 2 + Math.PI / 2);
+                ctx.translate(center, center);
+                ctx.rotate(startAngle + anglePerSegment / 2);
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#FFFFFF';
+                ctx.font = 'bold 12px Inter, sans-serif';
 
-                // Draw Zodiac Symbol (Zodiac Unicode Glyph)
-                ctx.fillStyle = '#fef08a';
-                ctx.shadowColor = 'rgba(212, 175, 55, 0.8)';
-                ctx.shadowBlur = 8;
-                ctx.font = 'bold 28px "Cinzel", serif';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(sector.zodiacSymbol, 0, 0);
-
-                ctx.restore();
-
-                // Inner Category Symbol
-                ctx.save();
-                ctx.translate(
-                    centerX + Math.cos(angle + arc / 2) * iconRadius,
-                    centerY + Math.sin(angle + arc / 2) * iconRadius
-                );
-                ctx.rotate(angle + arc / 2 + Math.PI / 2);
-
-                // FontAwesome glyph on canvas via unicode map
-                ctx.fillStyle = '#d4af37';
-                ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+                // Skrócony tekst kategorii
+                const maxChar = Math.floor(radius / 20);
+                let label = item.catName;
+                if (numSegments > 10) label = label.substring(0, 8) + '.';
+                
+                ctx.shadowColor = 'black';
                 ctx.shadowBlur = 4;
-                ctx.font = '900 16px "Font Awesome 6 Free"';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-
-                const iconMap = {
-                    'fa-fire': '\uf06d',
-                    'fa-coins': '\uf51e',
-                    'fa-comments': '\uf086',
-                    'fa-heart': '\uf004',
-                    'fa-crown': '\uf521',
-                    'fa-leaf': '\uf06c',
-                    'fa-scale-balanced': '\uf24e',
-                    'fa-wand-magic-sparkles': '\ue2ca',
-                    'fa-compass': '\uf14e',
-                    'fa-mountain': '\uf6fc',
-                    'fa-lightbulb': '\uf0eb',
-                    'fa-eye': '\uf06e'
-                };
-
-                const unicodeChar = iconMap[sector.icon] || '\uf005';
-                ctx.fillText(unicodeChar, 0, 0);
+                ctx.fillText(label, radius - 20, 4);
 
                 ctx.restore();
             }
 
-            // Inner Decorative Gold Ring
-            ctx.save();
+            // Ozdobna krawędź zewnętrzna
             ctx.beginPath();
-            ctx.arc(centerX, centerY, insideRadius, 0, Math.PI * 2);
-            ctx.strokeStyle = '#d4af37';
-            ctx.lineWidth = 4;
+            ctx.arc(center, center, radius, 0, 2 * Math.PI);
+            ctx.lineWidth = 6;
+            ctx.strokeStyle = '#FFD700';
             ctx.stroke();
-            ctx.restore();
         }
 
-        // Render Dynamic Legend
-        function renderLegend() {
-            const legendGrid = document.getElementById('legendGrid');
-            if (!legendGrid) return;
-            
-            legendGrid.innerHTML = '';
-            filteredSectors.forEach(sector => {
-                const item = document.createElement('div');
-                item.className = 'flex items-center gap-2.5 p-2 rounded-xl bg-purple-950/40 border border-purple-800/30 hover:border-gold/40 transition-all text-purple-200';
-                item.innerHTML = `
-                    <span class="text-xl text-gold font-bold w-6 text-center">${sector.zodiacSymbol}</span>
-                    <i class="fa-solid ${sector.icon} text-gold/80 text-xs"></i>
-                    <span class="truncate font-medium">${sector.label.split(':')[0]}</span>
-                `;
-                legendGrid.appendChild(item);
+        // Zmiana Kategorii
+        function setCategory(cat) {
+            if (isSpinning) return;
+
+            // Aktualizacja stylów przycisków
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.className = 'cat-btn px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-slate-300 hover:text-white hover:bg-mystic-800 transition-all duration-300';
             });
+            document.getElementById(`cat-${cat}`).className = 'cat-btn px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all duration-300 bg-mystic-purple text-white shadow-lg';
+
+            // Filtrowanie bazy
+            if (cat === 'all') {
+                activeFortunes = [...fortunesData];
+            } else {
+                activeFortunes = fortunesData.filter(f => f.category === cat);
+            }
+
+            // Ponowne wyrenderowanie
+            currentRotation = 0;
+            drawWheel();
         }
 
-            init() {
-                if (!this.ctx) {
-                    const AudioContext = window.AudioContext || window.webkitAudioContext;
-                    if (AudioContext) {
-                        this.ctx = new AudioContext();
-                    }
+        // Mechanizm Obrotu Koła
+        function spinWheel() {
+            if (isSpinning) return;
+            isSpinning = true;
+            spinBtn.disabled = true;
+            initAudio();
+
+            // Losowe ustawienie obrotów (min 5 obrotów + losowy kąt)
+            const numSegments = activeFortunes.length;
+            const anglePerSegment = (2 * Math.PI) / numSegments;
+            const randomIndex = Math.floor(Math.random() * numSegments);
+            
+            // Kąt celu (uwzględniający igłę na górze = -Math.PI/2)
+            const targetSegmentAngle = randomIndex * anglePerSegment + anglePerSegment / 2;
+            const fullRotations = (5 + Math.floor(Math.random() * 4)) * 2 * Math.PI;
+            
+            // Obliczenie docelowego kąta tak, aby wskaźnik na górze wskazał wybrany wycinek
+            const targetRotation = currentRotation + fullRotations + (3 * Math.PI / 2 - targetSegmentAngle - (currentRotation % (2 * Math.PI)));
+
+            const startRotation = currentRotation;
+            const startTime = performance.now();
+            const duration = 4500; // 4.5 sekundy obrotu
+
+            let lastSoundSegment = -1;
+
+            function animateSpin(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                // Funkcja Easing (Ease Out Cubic/Quart dla płynnego zwolnienia)
+                const easeOut = 1 - Math.pow(1 - progress, 4);
+                currentRotation = startRotation + (targetRotation - startRotation) * easeOut;
+
+                // Wyznaczenie aktualnego odcinka pod igłą dla dźwięku cykania
+                const normalizedAngle = (3 * Math.PI / 2 - (currentRotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+                const currentSegment = Math.floor(normalizedAngle / anglePerSegment);
+
+                if (currentSegment !== lastSoundSegment) {
+                    playTickSound();
+                    lastSoundSegment = currentSegment;
+                }
+
+                drawWheel();
+
+                if (progress < 1) {
+                    requestAnimationFrame(animateSpin);
+                } else {
+                    // Zakończenie obrotu
+                    isSpinning = false;
+                    spinBtn.disabled = false;
+                    
+                    // Wyznaczenie wygranej wróżby
+                    const finalIndex = Math.floor(((3 * Math.PI / 2 - (currentRotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI)) / anglePerSegment);
+                    currentFortune = activeFortunes[finalIndex % numSegments];
+
+                    // Zwiększenie licznika i dodanie do historii
+                    spinCount++;
+                    document.getElementById('spin-count').innerText = spinCount;
+                    document.getElementById('spin-count-mobile').innerText = spinCount;
+                    
+                    addToHistory(currentFortune);
+                    playWinSound();
+                    showFortuneModal(currentFortune);
                 }
             }
 
-            playTick() {
-                if (!this.enabled) return;
-                this.init();
-                if (!this.ctx) return;
-
-                try {
-                    const osc = this.ctx.createOscillator();
-                    const gain = this.ctx.createGain();
-
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(400, this.ctx.currentTime);
-                    osc.frequency.exponentialRampToValueAtTime(80, this.ctx.currentTime + 0.04);
-
-                    gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.04);
-
-                    osc.connect(gain);
-                    gain.connect(this.ctx.destination);
-
-                    osc.start();
-                    osc.stop(this.ctx.currentTime + 0.04);
-                } catch (e) {
-                    // Audio context errors ignored safely
-                }
-            }
-
-            playWin() {
-                if (!this.enabled) return;
-                this.init();
-                if (!this.ctx) return;
-
-                try {
-                    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
-                    notes.forEach((freq, index) => {
-                        const osc = this.ctx.createOscillator();
-                        const gain = this.ctx.createGain();
-
-                        osc.type = 'sine';
-                        osc.frequency.setValueAtTime(freq, this.ctx.currentTime + index * 0.1);
-
-                        gain.gain.setValueAtTime(0, this.ctx.currentTime + index * 0.1);
-                        gain.gain.linearRampToValueAtTime(0.2, this.ctx.currentTime + index * 0.1 + 0.05);
-                        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + index * 0.1 + 0.5);
-
-                        osc.connect(gain);
-                        gain.connect(this.ctx.destination);
-
-                        osc.start(this.ctx.currentTime + index * 0.1);
-                        osc.stop(this.ctx.currentTime + index * 0.1 + 0.5);
-                    });
-                } catch (e) {
-                    // Audio fallback
-                }
-            }
+            requestAnimationFrame(animateSpin);
         }
 
-        const soundFX = new SoundEffects();
+        // Dodawanie do historii
+        function addToHistory(fortune) {
+            const historyList = document.getElementById('history-list');
+            const emptyMsg = document.getElementById('empty-history');
+            if (emptyMsg) emptyMsg.remove();
 
-        // State variables
-        let canvas, ctx;
-        let startAngle = 0;
-        let currentSectorIndex = 0;
-        let isSpinning = false;
-        let spinTimeout = null;
-        let spinAngleStart = 10;
-        let spinTime = 0;
-        let spinTimeTotal = 0;
-        let selectedCategory = 'general';
-        let filteredSectors = [...SECTORS];
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-        // Init Starfield Canvas Background
-        function initStarfield() {
-            const starCanvas = document.getElementById('starfield');
-            const starCtx = starCanvas.getContext('2d');
-            let width, height, stars = [];
+            const itemHtml = `
+                <div class="p-3 rounded-xl bg-mystic-900/80 border border-mystic-purple/30 backdrop-blur-sm animate-fade-in flex flex-col gap-1">
+                    <div class="flex items-center justify-between text-xs text-slate-400">
+                        <span class="text-mystic-gold font-semibold flex items-center gap-1">
+                            <i class="fa-solid ${fortune.icon}"></i> ${fortune.catName}
+                        </span>
+                        <span>${time}</span>
+                    </div>
+                    <p class="text-xs text-slate-200 italic line-clamp-2">"${fortune.text}"</p>
+                </div>
+            `;
 
-            function resize() {
-                width = window.innerWidth;
-                height = window.innerHeight;
-                starCanvas.width = width;
-                starCanvas.height = height;
-                createStars();
+            historyList.insertAdjacentHTML('afterbegin', itemHtml);
+        }
+
+        // Pokazywanie Modalu z Wróżbą
+        function showFortuneModal(fortune) {
+            const modal = document.getElementById('fortune-modal');
+            const content = document.getElementById('modal-content');
+
+            document.getElementById('modal-icon').className = `fa-solid ${fortune.icon}`;
+            document.getElementById('modal-category').innerText = fortune.catName;
+            document.getElementById('modal-text').innerText = `"${fortune.text}"`;
+
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            content.classList.remove('scale-90');
+            content.classList.add('scale-100');
+        }
+
+        // Zamykanie Modalu
+        function closeModal() {
+            const modal = document.getElementById('fortune-modal');
+            const content = document.getElementById('modal-content');
+
+            content.classList.remove('scale-100');
+            content.classList.add('scale-90');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        // Udostępnianie Wróżby (Kopiowanie do schowka)
+        function shareFortune() {
+            if (!currentFortune) return;
+            const shareText = `✨ Moja Przepowiednia na dziś z Mistycznego Koła Fortuny:\n"${currentFortune.text}"\nSprawdź swoją przyszłość!`;
+
+            // Awaryjne kopiowanie dla iframe / starych przeglądarek
+            const textArea = document.createElement("textarea");
+            textArea.value = shareText;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                alert('Przepowiednia została skopiowana do schowka!');
+            } catch (err) {
+                console.error('Błąd kopiowania', err);
             }
+            document.body.removeChild(textArea);
+        }
 
-            function createStars() {
-                stars = [];
-                const count = Math.floor((width * height) / 3000);
-                for (let i = 0; i < count; i++) {
-                    stars.push({
-                        x: Math.random() * width,
-                        y: Math.random() * height,
-                        radius: Math.random() * 1.5,
-                        alpha: Math.random(),
-                        speed: Math.random() * 0.02
-                    });
-                }
-            }
+        // Animowane Tło (Gwiazdy i Cząsteczki)
+        function initStarsBackground() {
+            const starsCanvas = document.getElementById('stars-canvas');
+            const starsCtx = starsCanvas.getContext('2d');
 
-            function drawStars() {
-                starCtx.clearRect(0, 0, width, height);
-                starCtx.fillStyle = '#ffffff';
+            let width = starsCanvas.width = window.innerWidth;
+            let height = starsCanvas.height = window.innerHeight;
+
+            const stars = Array.from({ length: 120 }, () => ({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                radius: Math.random() * 1.5 + 0.5,
+                alpha: Math.random(),
+                speed: Math.random() * 0.02 + 0.005
+            }));
+
+            function animateStars() {
+                starsCtx.clearRect(0, 0, width, height);
 
                 stars.forEach(star => {
                     star.alpha += star.speed;
                     if (star.alpha > 1 || star.alpha < 0) {
                         star.speed = -star.speed;
                     }
-                    starCtx.globalAlpha = Math.abs(star.alpha);
-                    starCtx.beginPath();
-                    starCtx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-                    starCtx.fill();
+
+                    starsCtx.beginPath();
+                    starsCtx.arc(star.x, star.y, star.radius, 0, 2 * Math.PI);
+                    starsCtx.fillStyle = `rgba(255, 215, 0, ${Math.abs(star.alpha)})`;
+                    starsCtx.fill();
                 });
 
-                requestAnimationFrame(drawStars);
+                requestAnimationFrame(animateStars);
             }
 
-            window.addEventListener('resize', resize);
-            resize();
-            drawStars();
-        }
-
-        // Draw Canvas Wheel
-        function drawWheel() {
-            if (!canvas) return;
-            ctx = canvas.getContext('2d');
-            const numSectors = filteredSectors.length;
-            const outsideRadius = canvas.width / 2 - 15;
-            const textRadius = outsideRadius - 65;
-            const insideRadius = 55;
-
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            const arc = Math.PI * 2 / numSectors;
-
-            // Outer Glowing Ring
-            ctx.save();
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, outsideRadius + 8, 0, Math.PI * 2);
-            ctx.strokeStyle = '#d4af37';
-            ctx.lineWidth = 3;
-            ctx.shadowColor = '#d4af37';
-            ctx.shadowBlur = 15;
-            ctx.stroke();
-            ctx.restore();
-
-            // Draw Sectors
-            for (let i = 0; i < numSectors; i++) {
-                const angle = startAngle + i * arc;
-                const sector = filteredSectors[i];
-
-                // Gradient for sector
-                const grad = ctx.createRadialGradient(centerX, centerY, insideRadius, centerX, centerY, outsideRadius);
-                grad.addColorStop(0, sector.color1);
-                grad.addColorStop(1, sector.color2);
-
-                ctx.fillStyle = grad;
-                ctx.beginPath();
-                ctx.arc(centerX, centerY, outsideRadius, angle, angle + arc, false);
-                ctx.arc(centerX, centerY, insideRadius, angle + arc, angle, true);
-                ctx.fill();
-
-                // Sector Border Lines (Gold)
-                ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
-                ctx.lineWidth = 1.5;
-                ctx.stroke();
-
-                // Draw Text & Symbols
-                ctx.save();
-                ctx.fillStyle = '#fef08a';
-                ctx.shadowColor = 'rgba(0,0,0,0.8)';
-                ctx.shadowBlur = 4;
-                ctx.translate(
-                    centerX + Math.cos(angle + arc / 2) * textRadius,
-                    centerY + Math.sin(angle + arc / 2) * textRadius
-                );
-                ctx.rotate(angle + arc / 2 + Math.PI / 2);
-
-                // Label Text
-                const text = sector.label;
-                ctx.font = 'bold 12px Montserrat, sans-serif';
-                ctx.textAlign = 'center';
-                
-                // Truncate long text if needed for canvas fit
-                const maxLen = 18;
-                const displayText = text.length > maxLen ? text.substring(0, maxLen - 2) + '..' : text;
-                ctx.fillText(displayText, 0, 0);
-
-                ctx.restore();
-            }
-
-            // Inner Decorative Gold Ring
-            ctx.save();
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, insideRadius, 0, Math.PI * 2);
-            ctx.strokeStyle = '#d4af37';
-            ctx.lineWidth = 4;
-            ctx.stroke();
-            ctx.restore();
-        }
-
-        // Spin Logic
-        function rotateWheel() {
-            spinTime += 30;
-            if (spinTime >= spinTimeTotal) {
-                stopRotateWheel();
-                return;
-            }
-
-            // Ease Out Cubic Formula
-            const spinAngle = spinAngleStart - easeOut(spinTime, 0, spinAngleStart, spinTimeTotal);
-            const prevAngle = startAngle;
-            startAngle += (spinAngle * Math.PI / 180);
-
-            // Tick Audio logic when passing sectors
-            const numSectors = filteredSectors.length;
-            const arc = Math.PI * 2 / numSectors;
-            const currentSector = Math.floor((Math.PI * 2 - (startAngle % (Math.PI * 2))) / arc);
-            const prevSector = Math.floor((Math.PI * 2 - (prevAngle % (Math.PI * 2))) / arc);
-
-            if (currentSector !== prevSector) {
-                soundFX.playTick();
-            }
-
-            drawWheel();
-            spinTimeout = setTimeout(rotateWheel, 30);
-        }
-
-        function easeOut(t, b, c, d) {
-            const ts = (t /= d) * t;
-            const tc = ts * t;
-            return b + c * (tc + -3 * ts + 3 * t);
-        }
-
-        function stopRotateWheel() {
-            clearTimeout(spinTimeout);
-            isSpinning = false;
-
-            const numSectors = filteredSectors.length;
-            const degrees = startAngle * 180 / Math.PI + 90;
-            const argrad = 360 / numSectors;
-            let index = Math.floor((360 - (degrees % 360)) / argrad);
-            index = (index + numSectors) % numSectors;
-
-            const winnerSector = filteredSectors[index];
-            
-            soundFX.playWin();
-            showResultModal(winnerSector);
-            updateQuickResult(winnerSector);
-        }
-
-        function spin() {
-            if (isSpinning) return;
-            soundFX.init();
-
-            isSpinning = true;
-            spinAngleStart = Math.random() * 10 + 15; // Random initial speed
-            spinTime = 0;
-            spinTimeTotal = Math.random() * 3000 + 4000; // 4 - 7 seconds
-            rotateWheel();
-        }
-
-        // Modal Display & Interaction
-        function showResultModal(sector) {
-            const modal = document.getElementById('resultModal');
-            const modalBox = modal.querySelector('div');
-            
-            document.getElementById('modalCategory').innerText = sector.category.toUpperCase();
-            document.getElementById('modalTitle').innerText = sector.label;
-            document.getElementById('modalSub').innerText = sector.sub;
-            document.getElementById('modalReading').innerText = sector.reading;
-            
-            // Icon update
-            const iconEl = document.getElementById('modalIcon');
-            iconEl.className = `fa-solid ${sector.icon} text-3xl text-gold`;
-
-            // Open Modal Animation
-            modal.classList.remove('opacity-0', 'pointer-events-none');
-            modalBox.classList.remove('scale-90');
-            modalBox.classList.add('scale-100');
-        }
-
-        function hideResultModal() {
-            const modal = document.getElementById('resultModal');
-            const modalBox = modal.querySelector('div');
-            
-            modal.classList.add('opacity-0', 'pointer-events-none');
-            modalBox.classList.remove('scale-100');
-            modalBox.classList.add('scale-90');
-        }
-
-        function updateQuickResult(sector) {
-            const box = document.getElementById('quickResultBox');
-            const text = document.getElementById('quickResultText');
-            box.classList.remove('hidden');
-            text.innerText = `"${sector.label}" - ${sector.reading.substring(0, 75)}...`;
-        }
-
-        // Toast Notification Helper
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            const toastMsg = document.getElementById('toastMsg');
-            toastMsg.innerText = message;
-            
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
-
-        // Copy Reading to Clipboard
-        function copyReadingToClipboard() {
-            const title = document.getElementById('modalTitle').innerText;
-            const sub = document.getElementById('modalSub').innerText;
-            const reading = document.getElementById('modalReading').innerText;
-            const textToCopy = `✨ Moja Wróżba Astrologiczna: ${title} (${sub}) ✨\n\n"${reading}"\n\nLosuj swoje przeznaczenie na Astrologiczne Koło Fortuny!`;
-
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(textToCopy).then(() => {
-                    showToast('Wróżba skopiowana do schowka!');
-                }).catch(() => fallbackCopy(textToCopy));
-            } else {
-                fallbackCopy(textToCopy);
-            }
-        }
-
-        function fallbackCopy(text) {
-            const textArea = document.createElement("textarea");
-            textArea.value = text;
-            textArea.style.position = "fixed";
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            try {
-                document.execCommand('copy');
-                showToast('Wróżba skopiowana do schowka!');
-            } catch (err) {
-                showToast('Nie udało się skopiować.');
-            }
-            document.body.removeChild(textArea);
-        }
-
-        // Category Filter Handling
-        function filterCategory(category) {
-            selectedCategory = category;
-            if (category === 'general') {
-                filteredSectors = [...SECTORS];
-            } else {
-                filteredSectors = SECTORS.filter(s => s.category === category);
-                if (filteredSectors.length < 4) {
-                    filteredSectors = [...SECTORS];
-                }
-            }
-            startAngle = 0;
-            drawWheel();
-            renderLegend();
-        }
-
-        // DOM Event Listeners Setup
-        window.onload = function() {
-            canvas = document.getElementById('wheelCanvas');
-            
-            // Background Animation Init
-            initStarfield();
-
-            // Render Wheel & Legend
-            drawWheel();
-            renderLegend();
-
-                if (filteredSectors.length < 4) {
-                    filteredSectors = [...SECTORS];
-                }
-            }
-            startAngle = 0;
-            drawWheel();
-        }
-
-        // DOM Event Listeners Setup
-        window.onload = function() {
-            canvas = document.getElementById('wheelCanvas');
-            
-            // Background Animation Init
-            initStarfield();
-
-            // Initial Draw of Wheel
-            drawWheel();
-
-            // Spin Trigger Listeners
-            document.getElementById('spinBtn').addEventListener('click', spin);
-            document.getElementById('spinBtnCenter').addEventListener('click', spin);
-
-            // Modal Close Listeners
-            document.getElementById('closeModal').addEventListener('click', hideResultModal);
-            document.getElementById('spinAgainBtn').addEventListener('click', () => {
-                hideResultModal();
-                setTimeout(spin, 400);
-            });
-
-            // Copy Button
-            document.getElementById('copyBtn').addEventListener('click', copyReadingToClipboard);
-
-            // Audio Toggle Button
-            document.getElementById('soundToggle').addEventListener('click', () => {
-                soundFX.enabled = !soundFX.enabled;
-                const icon = document.getElementById('soundIcon');
-                const text = document.getElementById('soundText');
-
-                if (soundFX.enabled) {
-                    icon.className = 'fa-solid fa-volume-high';
-                    text.innerText = 'Dźwięk: Wł.';
-                } else {
-                    icon.className = 'fa-solid fa-volume-xmark';
-                    text.innerText = 'Dźwięk: Wył.';
-                }
-            });
-
-            // Category Tab Buttons Event Handling
-            const categoryBtns = document.querySelectorAll('.category-btn');
-            categoryBtns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    if (isSpinning) return;
-
-                    categoryBtns.forEach(b => {
-                        b.classList.remove('bg-gold', 'text-cosmic-dark', 'shadow-md');
-                        b.classList.add('text-purple-200');
-                    });
-
-                    const target = e.currentTarget;
-                    target.classList.add('bg-gold', 'text-cosmic-dark', 'shadow-md');
-                    target.classList.remove('text-purple-200');
-
-                    const cat = target.getAttribute('data-category');
-                    filterCategory(cat);
-                });
-            });
-
-            // Responsive Canvas Resizing
             window.addEventListener('resize', () => {
-                drawWheel();
+                width = starsCanvas.width = window.innerWidth;
+                height = starsCanvas.height = window.innerHeight;
+                resizeCanvas();
             });
+
+            animateStars();
+        }
+
+        // Inicjalizacja Gry po załadowaniu okna
+        window.onload = function () {
+            initStarsBackground();
+            resizeCanvas();
         };
     </script>
 </body>
